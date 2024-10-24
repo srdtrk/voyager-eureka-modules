@@ -1,6 +1,21 @@
-[package]
-name = "ibc-eureka-plugins"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "voyager/client-update/sp1-ics07",
+]
+resolver = "2"
 
-[dependencies]
+[workspace.package]
+edition = "2021"
+repository = "https://github.com/srdtrk/ibc-eureka-plugins"
+authors    = ["srdtrk <srdtrk.b@gmail.com>"]
+version = "0.1.0"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+
+serde = { version = "1.0", default-features = false }
+
+sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "9ee431733a1b4645024e348eca7f8fdd3c8e17c5" }
+
+voyager-message = { git = "https://github.com/unionlabs/union", rev = "3c55d434e4f21cdce0bc53693be92a6c693286f8" }
+voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3c55d434e4f21cdce0bc53693be92a6c693286f8" }

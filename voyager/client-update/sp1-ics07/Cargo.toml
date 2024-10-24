@@ -1,0 +1,15 @@
+[package]
+name    = "voyager-client-update-plugin-sp1-ics07"
+version = { workspace = true }
+authors = { workspace = true }
+edition = { workspace = true }
+repository = { workspace = true }
+
+[dependencies]
+tokio = { workspace = true }
+serde = { workspace = true }
+
+sp1-ics07-tendermint-solidity = { workspace = true }
+
+voyager-message = { workspace = true }
+voyager-vm = { workspace = true }
