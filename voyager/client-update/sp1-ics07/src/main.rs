@@ -6,6 +6,7 @@ pub struct Config {
 
     pub prover_endpoints: Vec<String>,
 }
+
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
     todo!();

@@ -17,5 +17,5 @@ serde = { version = "1.0", default-features = false }
 
 sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "9ee431733a1b4645024e348eca7f8fdd3c8e17c5" }
 
-voyager-message = { git = "https://github.com/unionlabs/union", rev = "3c55d434e4f21cdce0bc53693be92a6c693286f8" }
-voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3c55d434e4f21cdce0bc53693be92a6c693286f8" }
+voyager-message = { git = "https://github.com/srdtrk/union", branch = "serdar/3143-fix-unionlabs" }
+voyager-vm = { git = "https://github.com/srdtrk/union", branch = "serdar/3143-fix-unionlabs" }
