@@ -329,9 +329,9 @@ source = "git+https://github.com/Snowfork/milagro_bls?rev=bc2b5b5e8d48b7e2e1bfaa
 
 [[package]]
 name = "anstyle"
-version = "1.0.8"
+version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bec1de6f59aedf83baf9ff929c98f2ad654b97c9510f4e70cf6f661d49fd5b1"
+checksum = "8365de52b16c035ff4fcafe0092ba9390540e3e352870ac09933bebcaa2c8c56"
 
 [[package]]
 name = "anyhow"
@@ -688,7 +688,7 @@ dependencies = [
 [[package]]
 name = "beacon-api"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "enumorph",
  "hex",
@@ -712,7 +712,7 @@ checksum = "d86b93f97252c47b41663388e6d155714a9d0c398b99f1005cbc5f978b29f445"
 [[package]]
 name = "berachain-light-client-types"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "protos",
  "serde",
@@ -991,7 +991,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "chain-utils"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "beacon-api",
  "berachain-light-client-types",
@@ -1151,9 +1151,10 @@ dependencies = [
 [[package]]
 name = "cometbft-rpc"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "base64 0.21.7",
+ "cometbft-types",
  "hex",
  "jsonrpsee",
  "macros",
@@ -1164,6 +1165,18 @@ dependencies = [
  "thiserror",
  "tracing",
  "tracing-subscriber",
+ "unionlabs",
+]
+
+[[package]]
+name = "cometbft-types"
+version = "0.1.0"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+dependencies = [
+ "protos",
+ "serde",
+ "serde-utils",
+ "thiserror",
  "unionlabs",
 ]
 
@@ -1230,7 +1243,7 @@ checksum = "7c74b8349d32d297c9134b8c88677813a227df8f779daa29bfc29c183fe3dca6"
 [[package]]
 name = "contracts"
 version = "0.0.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "ethers",
  "serde",
@@ -1727,9 +1740,9 @@ dependencies = [
 
 [[package]]
 name = "encoding_rs"
-version = "0.8.34"
+version = "0.8.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b45de904aa0b010bce2ab45264d0631681847fa7b6f2eaa7dab7619943bc4f59"
+checksum = "75030f3c4f45dafd7586dd6780965a8c7e8e285a5ecb86713e63a79c5b2766f3"
 dependencies = [
  "cfg-if",
 ]
@@ -2938,7 +2951,7 @@ dependencies = [
 [[package]]
 name = "ics23"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "prost 0.12.6",
  "ripemd",
@@ -3495,9 +3508,9 @@ checksum = "8e9489c2807c139ffd9c1794f4af0ebe86a828db53ecdc7fea2111d0fed085d1"
 
 [[package]]
 name = "libm"
-version = "0.2.8"
+version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ec2a862134d2a7d32d7983ddcdd1c4923530833c9f2ea1a44fc5fa473989058"
+checksum = "a00419de735aac21d53b0de5ce2c03bd3627277cf471300f27ebc89f7d828047"
 
 [[package]]
 name = "libredox"
@@ -3582,7 +3595,7 @@ dependencies = [
 [[package]]
 name = "macros"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4104,18 +4117,18 @@ dependencies = [
 
 [[package]]
 name = "pin-project"
-version = "1.1.6"
+version = "1.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "baf123a161dde1e524adf36f90bc5d8d3462824a9c43553ad07a8183161189ec"
+checksum = "be57f64e946e500c8ee36ef6331845d40a93055567ec57e8fae13efd33759b95"
 dependencies = [
  "pin-project-internal",
 ]
 
 [[package]]
 name = "pin-project-internal"
-version = "1.1.6"
+version = "1.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a4502d8515ca9f32f1fb543d987f63d95a14934883db45bdb48060b6b69257f8"
+checksum = "3c0f5fad0874fc7abcd4d750e76917eaebbecaa2c20bde22e1dbeeba8beb758c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4124,9 +4137,9 @@ dependencies = [
 
 [[package]]
 name = "pin-project-lite"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bda66fc9667c18cb2758a2ac84d1167245054bcf85d5d1aaa6923f45801bdd02"
+checksum = "915a1e146535de9163f3987b8944ed8cf49a18bb0056bcebcdcece385cece4ff"
 
 [[package]]
 name = "pin-utils"
@@ -4366,7 +4379,7 @@ dependencies = [
 [[package]]
 name = "protos"
 version = "0.0.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "chrono",
  "pbjson-types",
@@ -4490,7 +4503,7 @@ dependencies = [
 [[package]]
 name = "reconnecting-jsonrpc-ws-client"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "arc-swap",
  "futures",
@@ -4530,9 +4543,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.11.0"
+version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38200e5ee88914975b69f657f0801b6f6dccafd44fd9326302a4aaeecfacb1d8"
+checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -4617,7 +4630,7 @@ dependencies = [
 [[package]]
 name = "reth-ipc"
 version = "1.1.0"
-source = "git+https://github.com/paradigmxyz/reth#0df3148357cbfb9b811fd04da6a69fca24e59be2"
+source = "git+https://github.com/paradigmxyz/reth#0c516091b8f45f07cf4d76879153d3cd90015363"
 dependencies = [
  "async-trait",
  "bytes",
@@ -4799,9 +4812,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.37"
+version = "0.38.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8acb788b847c24f28525660c4d7758620a7210875711f79e7f663cc152726811"
+checksum = "aa260229e6538e52293eeb577aabd09945a09d6d9cc0fc550ed7529056c2e32a"
 dependencies = [
  "bitflags 2.6.0",
  "errno",
@@ -4992,9 +5005,9 @@ dependencies = [
 
 [[package]]
 name = "scale-info"
-version = "2.11.4"
+version = "2.11.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22760a375f81a31817aeaf6f5081e9ccb7ffd7f2da1809a6e3fc82b6656f10d5"
+checksum = "1aa7ffc1c0ef49b0452c6e2986abf2b07743320641ffd5fc63d552458e3b779b"
 dependencies = [
  "cfg-if",
  "derive_more 1.0.0",
@@ -5004,14 +5017,14 @@ dependencies = [
 
 [[package]]
 name = "scale-info-derive"
-version = "2.11.4"
+version = "2.11.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "abc61ebe25a5c410c0e245028fc9934bf8fa4817199ef5a24a68092edfd34614"
+checksum = "46385cc24172cf615450267463f937c10072516359b3ff1cb24228a4a08bf951"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 1.0.109",
+ "syn 2.0.85",
 ]
 
 [[package]]
@@ -5056,7 +5069,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "scroll-api"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "reqwest",
  "serde",
@@ -5069,7 +5082,7 @@ dependencies = [
 [[package]]
 name = "scroll-rpc"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "jsonrpsee",
  "macros",
@@ -5198,7 +5211,7 @@ dependencies = [
 [[package]]
 name = "serde-utils"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "base64 0.21.7",
  "bitvec",
@@ -5462,7 +5475,7 @@ dependencies = [
 [[package]]
 name = "sp1-ics07-tendermint-solidity"
 version = "0.1.0"
-source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=9ee431733a1b4645024e348eca7f8fdd3c8e17c5#9ee431733a1b4645024e348eca7f8fdd3c8e17c5"
+source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=9d52290c4ea4c4247ad82f1e23f87b90e212968a#9d52290c4ea4c4247ad82f1e23f87b90e212968a"
 dependencies = [
  "alloy-sol-types",
  "ibc-client-tendermint-types",
@@ -5499,7 +5512,7 @@ dependencies = [
 [[package]]
 name = "ssz"
 version = "0.5.3"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "derivative",
  "itertools 0.10.5",
@@ -5516,7 +5529,7 @@ dependencies = [
 [[package]]
 name = "ssz-derive"
 version = "0.5.3"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -5579,7 +5592,7 @@ dependencies = [
 [[package]]
 name = "subset-of"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "subset-of-derive",
 ]
@@ -5587,7 +5600,7 @@ dependencies = [
 [[package]]
 name = "subset-of-derive"
 version = "0.0.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5793,8 +5806,9 @@ dependencies = [
 [[package]]
 name = "tendermint-light-client-types"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
+ "cometbft-types",
  "protos",
  "serde",
  "thiserror",
@@ -6401,7 +6415,7 @@ checksum = "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
 [[package]]
 name = "unionlabs"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "alloy",
  "base64 0.21.7",
@@ -6516,12 +6530,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
-name = "voyager-client-update-plugin-sp1-ics07"
+name = "voyager-chain-module-ethereum-eureka"
 version = "0.1.0"
 dependencies = [
+ "beacon-api",
+ "chain-utils",
+ "futures",
  "serde",
+ "serde_json",
  "sp1-ics07-tendermint-solidity",
+ "thiserror",
  "tokio",
+ "unionlabs",
  "voyager-message",
  "voyager-vm",
 ]
@@ -6529,7 +6549,7 @@ dependencies = [
 [[package]]
 name = "voyager-core"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "enumorph",
  "hex",
@@ -6545,7 +6565,7 @@ dependencies = [
 [[package]]
 name = "voyager-message"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "beacon-api",
  "chain-utils",
@@ -6594,7 +6614,7 @@ dependencies = [
 [[package]]
 name = "voyager-vm"
 version = "0.1.0"
-source = "git+https://github.com/srdtrk/union?branch=serdar%2F3143-fix-unionlabs#e236fe32a0711934f07c881a64d3a818d69af6ee"
+source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
 dependencies = [
  "either",
  "frame-support-procedural",
