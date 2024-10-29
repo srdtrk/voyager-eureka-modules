@@ -1,5 +1,7 @@
 [workspace]
 members = [
+    "packages/solidity",
+
     "chain/ethereum-eureka",
 ]
 resolver = "2"
@@ -9,6 +11,7 @@ edition = "2021"
 repository = "https://github.com/srdtrk/ibc-eureka-plugins"
 authors    = ["srdtrk <srdtrk.b@gmail.com>"]
 version = "0.1.0"
+license = "MIT"
 
 [workspace.dependencies]
 tokio = { version = "1", features = ["full"] }
@@ -22,6 +25,8 @@ serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 thiserror = { version = "1", default-features = false }
 
 alloy = "0.5"
+alloy-sol-types = "0.8"
+alloy-contract = "0.5"
 
 sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "9d52290c4ea4c4247ad82f1e23f87b90e212968a" }
 
