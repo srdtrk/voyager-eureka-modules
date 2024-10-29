@@ -1,0 +1,29 @@
+{
+  "name": "voyager-eureka-modules",
+  "description": "Voyager modules and plugins for IBC Eureka",
+  "version": "1.0.0",
+  "author": {
+    "name": "srdtrk",
+    "url": "https://github.com/srdtrk"
+  },
+  "type": "module",
+  "private": true,
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "forge",
+    "foundry",
+    "smart-contracts",
+    "solidity",
+    "template",
+    "ibc",
+    "cosmos",
+    "tendermint",
+    "light-client",
+    "relayer",
+    "union",
+    "voyager",
+  ],
+  "dependencies": {
+  },
+}
