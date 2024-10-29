@@ -1,7 +1,10 @@
 [package]
 edition = "2021"
 name    = "voyager-chain-module-ethereum-eureka"
-version = "0.1.0"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+license = { workspace = true }
 
 [dependencies]
 tokio              = { workspace = true }
