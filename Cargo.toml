@@ -1,6 +1,32 @@
-[package]
-name = "ibc-eureka-plugins"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "chain/ethereum-eureka",
+]
+resolver = "2"
 
-[dependencies]
+[workspace.package]
+edition = "2021"
+repository = "https://github.com/srdtrk/ibc-eureka-plugins"
+authors    = ["srdtrk <srdtrk.b@gmail.com>"]
+version = "0.1.0"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+futures = { version = "0.3", default-features = false }
+reqwest = { version = "0.12", default-features = false }
+jsonrpsee = { version = "0.24.2", default-features = false }
+
+serde = { version = "1.0", default-features = false }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }     # serde-json requires one of "std" or "alloc"
+
+thiserror = { version = "1", default-features = false }
+
+alloy = "0.5"
+
+sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "9d52290c4ea4c4247ad82f1e23f87b90e212968a" }
+
+unionlabs = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+voyager-message = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+beacon-api = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+chain-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
