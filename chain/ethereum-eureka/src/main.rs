@@ -5,7 +5,11 @@ use std::sync::Arc;
 use beacon_api::client::BeaconApiClient;
 //use chain_utils::ethereum::IbcHandlerExt;
 //use alloy::
-use alloy::providers::{Provider, ProviderBuilder};
+use alloy::{
+    providers::{Provider, ProviderBuilder},
+    sol_types::SolValue,
+};
+use ibc_eureka_solidity::{ics02::client as ics02_client, ics26::router as ics26_router};
 use jsonrpsee::{
     core::{async_trait, RpcResult},
     types::ErrorObject,
@@ -13,6 +17,7 @@ use jsonrpsee::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use sp1_ics07_tendermint_solidity::sp1_ics07_tendermint;
 use unionlabs::{
     ethereum::{ibc_commitment_key, IBC_HANDLER_COMMITMENTS_SLOT},
     ibc::{core::client::height::Height, lightclients::ethereum::storage_proof::StorageProof},
@@ -344,26 +349,42 @@ impl ChainModuleServer for Module {
         e: &Extensions,
         client_id: ClientId,
     ) -> RpcResult<RawClientState<'static>> {
-        todo!()
-        //let latest_execution_height = self.provider.get_block_number().await.unwrap().as_u64();
-        //
-        //let ClientInfo {
-        //    client_type,
-        //    ibc_interface,
-        //    metadata: _,
-        //} = self.client_info(e, client_id.clone()).await?;
-        //
-        //Ok(RawClientState {
-        //    client_type,
-        //    ibc_interface,
-        //    bytes: self
-        //        .ibc_handler()
-        //        .ibc_state_read(latest_execution_height, ClientStatePath { client_id })
-        //        .await
-        //        .unwrap()
-        //        .0
-        //        .into(),
-        //})
+        let provider = ProviderBuilder::new()
+            .with_recommended_fillers()
+            .on_http(self.eth_rpc_api.clone());
+
+        let latest_execution_height = provider.get_block_number().await.unwrap();
+
+        let ics26_contract =
+            ics26_router::new(self.ibc_handler_address.parse().unwrap(), provider.clone());
+        let ics02_address = ics26_contract.ICS02_CLIENT().call().await.unwrap()._0;
+        let ics02_contract = ics02_client::new(ics02_address, provider.clone());
+        let sp1_ics07_address = ics02_contract
+            .getClient(client_id.to_string())
+            .call()
+            .await
+            .unwrap()
+            ._0;
+        let sp1_ics07_contract = sp1_ics07_tendermint::new(sp1_ics07_address, provider);
+        let client_state = sp1_ics07_contract
+            .getClientState()
+            .block(latest_execution_height.into())
+            .call()
+            .await
+            .unwrap()
+            ._0;
+
+        let ClientInfo {
+            client_type,
+            ibc_interface,
+            metadata: _,
+        } = self.client_info(e, client_id.clone()).await?;
+
+        Ok(RawClientState {
+            client_type,
+            ibc_interface,
+            bytes: client_state.abi_encode().into(),
+        })
     }
 }
 
