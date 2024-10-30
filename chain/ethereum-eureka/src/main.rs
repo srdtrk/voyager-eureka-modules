@@ -280,18 +280,13 @@ impl ChainModuleServer for Module {
             .unwrap())
     }
 
-    async fn client_info(&self, _: &Extensions, client_id: ClientId) -> RpcResult<ClientInfo> {
-        todo!()
-        //Ok(ClientInfo {
-        //    client_type: ClientType::new(
-        //        self.ibc_handler()
-        //            .client_types(client_id.to_string())
-        //            .await
-        //            .unwrap(),
-        //    ),
-        //    ibc_interface: IbcInterface::new(IbcInterface::IBC_SOLIDITY),
-        //    metadata: Default::default(),
-        //})
+    async fn client_info(&self, _: &Extensions, _client_id: ClientId) -> RpcResult<ClientInfo> {
+        // NOTE: We only support one client type for now
+        Ok(ClientInfo {
+            client_type: ClientType::new(ibc_eureka_types::SP1_ICS07_CLIENT_TYPE),
+            ibc_interface: IbcInterface::new(ibc_eureka_types::IBC_EUREKA_INTERFACE),
+            metadata: Default::default(),
+        })
     }
 
     async fn query_ibc_state(&self, _: &Extensions, at: Height, path: Path) -> RpcResult<Value> {

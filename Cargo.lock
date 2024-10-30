@@ -7277,6 +7277,7 @@ dependencies = [
  "beacon-api",
  "chain-utils",
  "futures",
+ "ibc-eureka-types",
  "jsonrpsee",
  "reqwest 0.12.8",
  "serde",
