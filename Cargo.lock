@@ -3443,6 +3443,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "ibc-eureka-types"
+version = "0.1.0"
+
+[[package]]
 name = "ibc-primitives"
 version = "0.54.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

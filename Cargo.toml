@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "packages/types",
     "packages/solidity",
 
     "chain/ethereum-eureka",
