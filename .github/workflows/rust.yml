@@ -1,0 +1,57 @@
+# Based on https://github.com/actions-rs/example/blob/master/.github/workflows/quickstart.yml
+name: rust
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  lints:
+    name: fmt-and-clippy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: "Install Bun"
+        uses: "oven-sh/setup-bun@v1"
+      - name: "Install the Node.js dependencies"
+        run: bun install
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: rustfmt, clippy
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+
+  tests:
+    name: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: "Install Bun"
+        uses: "oven-sh/setup-bun@v1"
+      - name: "Install the Node.js dependencies"
+        run: bun install
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --locked --all-features
