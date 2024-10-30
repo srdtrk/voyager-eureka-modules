@@ -109,15 +109,11 @@ impl Module {
     //}
 
     pub async fn execution_height_of_beacon_slot(&self, slot: u64) -> u64 {
-        let execution_height = self
-            .beacon_api_client
+        //debug!("beacon slot {slot} is execution height {execution_height}");
+        self.beacon_api_client
             .execution_height(beacon_api::client::BlockId::Slot(slot))
             .await
-            .unwrap();
-
-        //debug!("beacon slot {slot} is execution height {execution_height}");
-
-        execution_height
+            .unwrap()
     }
 
     pub async fn fetch_ibc_state(&self, path: Path, height: Height) -> Result<Value, BoxDynError> {
@@ -309,43 +305,43 @@ impl ChainModuleServer for Module {
     }
 
     async fn query_ibc_proof(&self, _: &Extensions, at: Height, path: Path) -> RpcResult<Value> {
-        todo!()
-        //let location = ibc_commitment_key(&path.to_string(), IBC_HANDLER_COMMITMENTS_SLOT);
-        //
-        //let execution_height = self
-        //    .execution_height_of_beacon_slot(at.revision_height)
-        //    .await;
-        //
-        //let provider = ProviderBuilder::new()
-        //    .with_recommended_fillers()
-        //    .on_http(self.eth_rpc_api);
-        //let proof = provider
-        //    .get_proof(
-        //        ethers::types::H160::from(self.ibc_handler_address),
-        //        vec![location.to_be_bytes().into()],
-        //        Some(execution_height.into()),
-        //    )
-        //    .await
-        //    .unwrap();
-        //
-        //let proof = match <[_; 1]>::try_from(proof.storage_proof) {
-        //    Ok([proof]) => proof,
-        //    Err(invalid) => {
-        //        panic!("received invalid response from eth_getProof, expected length of 1 but got `{invalid:#?}`");
-        //    }
-        //};
-        //
-        //let proof = StorageProof {
-        //    key: U256::from_be_bytes(proof.key.to_fixed_bytes()),
-        //    value: proof.value.into(),
-        //    proof: proof
-        //        .proof
-        //        .into_iter()
-        //        .map(|bytes| bytes.to_vec())
-        //        .collect(),
-        //};
-        //
-        //Ok(serde_json::to_value(proof).expect("serialization is infallible; qed;"))
+        // TODO: fix commitment key
+        let location = ibc_commitment_key(&path.to_string(), IBC_HANDLER_COMMITMENTS_SLOT);
+
+        let provider = ProviderBuilder::new()
+            .with_recommended_fillers()
+            .on_http(self.eth_rpc_api.clone());
+
+        let execution_height = self
+            .execution_height_of_beacon_slot(at.revision_height)
+            .await;
+
+        let proof = provider
+            .get_proof(
+                self.ibc_handler_address.parse().unwrap(),
+                vec![location.to_be_bytes().into()],
+            )
+            .block_id(execution_height.into())
+            .await
+            .unwrap();
+
+        let proof = match <[_; 1]>::try_from(proof.storage_proof) {
+            Ok([proof]) => proof,
+            Err(invalid) => {
+                panic!("received invalid response from eth_getProof, expected length of 1 but got `{invalid:#?}`");
+            }
+        };
+        let proof = StorageProof {
+            key: U256::from_be_bytes(proof.key.0 .0),
+            value: U256::from_be_bytes(proof.value.to_be_bytes()),
+            proof: proof
+                .proof
+                .into_iter()
+                .map(|bytes| bytes.to_vec())
+                .collect(),
+        };
+
+        Ok(serde_json::to_value(proof).expect("serialization is infallible; qed;"))
     }
 
     async fn query_raw_unfinalized_trusted_client_state(
