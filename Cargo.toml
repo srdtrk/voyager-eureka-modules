@@ -1,6 +1,8 @@
 [workspace]
 members = [
+    "packages/types",
     "packages/solidity",
+    "packages/union-ext",
 
     "chain/ethereum-eureka",
 ]
@@ -14,6 +16,10 @@ version = "0.1.0"
 license = "MIT"
 
 [workspace.dependencies]
+ibc-eureka-types = { path = "./packages/types" }
+ibc-eureka-solidity = { path = "./packages/solidity" }
+ibc-eureka-union-ext = { path = "./packages/union-ext" }
+
 tokio = { version = "1", features = ["full"] }
 futures = { version = "0.3", default-features = false }
 reqwest = { version = "0.12", default-features = false }
