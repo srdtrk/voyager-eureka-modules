@@ -3445,6 +3445,9 @@ dependencies = [
 [[package]]
 name = "ibc-eureka-types"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "ibc-eureka-union-ext"

@@ -2,6 +2,7 @@
 
 #![deny(clippy::nursery, clippy::pedantic, warnings, missing_docs)]
 
+use ibc_eureka_types::SOL_IBC_EUREKA_INTERFACE;
 use jsonrpsee::{
     core::{async_trait, RpcResult},
     Extensions,
@@ -133,5 +134,24 @@ impl ClientModuleServer for Module {
 
     async fn encode_proof(&self, _: &Extensions, _proof: Value) -> RpcResult<Hex<Vec<u8>>> {
         todo!()
+    }
+}
+
+impl TryFrom<String> for SupportedIbcInterfaces {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match &*value {
+            SOL_IBC_EUREKA_INTERFACE => Ok(Self::SolidityIbcEureka),
+            _ => Err(format!("unsupported IBC interface: `{value}`")),
+        }
+    }
+}
+
+impl From<SupportedIbcInterfaces> for String {
+    fn from(value: SupportedIbcInterfaces) -> Self {
+        match value {
+            SupportedIbcInterfaces::SolidityIbcEureka => SOL_IBC_EUREKA_INTERFACE.to_string(),
+        }
     }
 }
