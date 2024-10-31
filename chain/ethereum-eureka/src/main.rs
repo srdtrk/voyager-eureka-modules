@@ -1,6 +1,7 @@
 // #![warn(clippy::unwrap_used)] // oh boy this will be a lot of work
 
 use alloy::{
+    primitives::Address,
     providers::{Provider, ProviderBuilder},
     sol_types::SolValue,
 };
@@ -43,7 +44,7 @@ async fn main() {
 pub struct Module {
     pub chain_id: ChainId<'static>,
 
-    pub ibc_handler_address: String,
+    pub ics26_router_address: Address,
 
     pub eth_rpc_api: reqwest::Url,
     pub beacon_api_client: BeaconApiClient,
@@ -53,7 +54,7 @@ pub struct Module {
 #[serde(deny_unknown_fields)]
 pub struct Config {
     /// The address of the `IBCHandler` smart contract.
-    pub ibc_handler_address: String,
+    pub ics26_router_address: String,
 
     /// The RPC endpoint for the execution chain.
     pub eth_rpc_api: String,
@@ -76,7 +77,7 @@ impl ChainModule for Module {
 
         Ok(Module {
             chain_id: ChainId::new(U256::from(chain_id).to_string()),
-            ibc_handler_address: config.ibc_handler_address,
+            ics26_router_address: config.ics26_router_address.parse()?,
             eth_rpc_api,
             beacon_api_client: BeaconApiClient::new(config.eth_beacon_rpc_api).await?,
         })
@@ -94,7 +95,7 @@ impl Module {
 
         Ok(Self {
             chain_id: ChainId::new(U256::from(chain_id).to_string()),
-            ibc_handler_address: config.ibc_handler_address,
+            ics26_router_address: config.ics26_router_address.parse()?,
             eth_rpc_api,
             beacon_api_client: BeaconApiClient::new(config.eth_beacon_rpc_api).await?,
         })
@@ -123,8 +124,7 @@ impl Module {
         let provider = ProviderBuilder::new()
             .with_recommended_fillers()
             .on_http(self.eth_rpc_api.clone());
-        let ics26_contract =
-            ics26_router::new(self.ibc_handler_address.parse().unwrap(), provider.clone());
+        let ics26_contract = ics26_router::new(self.ics26_router_address, provider.clone());
 
         Ok(match path {
             Path::ClientState(path) => {
@@ -297,7 +297,7 @@ impl ChainModuleServer for Module {
 
         let proof = provider
             .get_proof(
-                self.ibc_handler_address.parse().unwrap(),
+                self.ics26_router_address,
                 vec![location.to_be_bytes().into()],
             )
             .block_id(execution_height.into())
