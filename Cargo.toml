@@ -18,6 +18,7 @@ license = "MIT"
 [workspace.dependencies]
 ibc-eureka-types = { path = "./packages/types" }
 ibc-eureka-solidity = { path = "./packages/solidity" }
+ibc-eureka-union-ext = { path = "./packages/union-ext" }
 
 tokio = { version = "1", features = ["full"] }
 futures = { version = "0.3", default-features = false }

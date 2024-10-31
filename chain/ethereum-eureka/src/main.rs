@@ -1,15 +1,14 @@
 // #![warn(clippy::unwrap_used)] // oh boy this will be a lot of work
 
-use std::sync::Arc;
-
-use beacon_api::client::BeaconApiClient;
-//use chain_utils::ethereum::IbcHandlerExt;
-//use alloy::
 use alloy::{
     providers::{Provider, ProviderBuilder},
     sol_types::SolValue,
 };
-use ibc_eureka_solidity::{ics02::client as ics02_client, ics26::router as ics26_router};
+use beacon_api::client::BeaconApiClient;
+use ibc_eureka_solidity::{
+    ibc_store::store as ibc_store, ics02::client as ics02_client, ics26::router as ics26_router,
+};
+use ibc_eureka_union_ext::path::IbcEurekaPathExt;
 use jsonrpsee::{
     core::{async_trait, RpcResult},
     types::ErrorObject,
@@ -109,10 +108,6 @@ impl Module {
         }
     }
 
-    //fn ibc_handler(&self) -> IBCHandler<Provider<Ws>> {
-    //    IBCHandler::new(self.ibc_handler_address, Arc::new(self.provider.clone()))
-    //}
-
     pub async fn execution_height_of_beacon_slot(&self, slot: u64) -> u64 {
         //debug!("beacon slot {slot} is execution height {execution_height}");
         self.beacon_api_client
@@ -122,102 +117,86 @@ impl Module {
     }
 
     pub async fn fetch_ibc_state(&self, path: Path, height: Height) -> Result<Value, BoxDynError> {
-        todo!()
-        //let execution_height = self
-        //    .execution_height_of_beacon_slot(height.revision_height)
-        //    .await;
-        //
-        //let provider = ProviderBuilder::new()
-        //    .with_recommended_fillers()
-        //    .on_http(eth_rpc_api.clone());
-        //let contract = sp1_ics07_tendermint::new(contract_address.parse()?, provider);
+        let execution_height = self
+            .execution_height_of_beacon_slot(height.revision_height)
+            .await;
+        let provider = ProviderBuilder::new()
+            .with_recommended_fillers()
+            .on_http(self.eth_rpc_api.clone());
+        let ics26_contract =
+            ics26_router::new(self.ibc_handler_address.parse().unwrap(), provider.clone());
 
-        //Ok(match path {
-        //    Path::ClientState(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::ClientConsensusState(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::Connection(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::ChannelEnd(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::Commitment(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::Acknowledgement(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //    Path::Receipt(path) => serde_json::to_value(
-        //        self.ibc_handler()
-        //            .ibc_state_read(execution_height, path.clone())
-        //            .await
-        //            .unwrap(),
-        //    )
-        //    .unwrap(),
-        //        Path::NextSequenceSend(path) => serde_json::to_value(
-        //            self.ibc_handler()
-        //                .ibc_state_read(execution_height, path.clone())
-        //                .await
-        //                .unwrap(),
-        //        )
-        //        .unwrap(),
-        //        Path::NextSequenceRecv(path) => serde_json::to_value(
-        //            self.ibc_handler()
-        //                .ibc_state_read(execution_height, path.clone())
-        //                .await
-        //                .unwrap(),
-        //        )
-        //        .unwrap(),
-        //        Path::NextSequenceAck(path) => serde_json::to_value(
-        //            self.ibc_handler()
-        //                .ibc_state_read(execution_height, path.clone())
-        //                .await
-        //                .unwrap(),
-        //        )
-        //        .unwrap(),
-        //        Path::NextConnectionSequence(path) => serde_json::to_value(
-        //            self.ibc_handler()
-        //                .ibc_state_read(execution_height, path.clone())
-        //                .await
-        //                .unwrap(),
-        //        )
-        //        .unwrap(),
-        //        Path::NextClientSequence(path) => serde_json::to_value(
-        //            self.ibc_handler()
-        //                .ibc_state_read(execution_height, path.clone())
-        //                .await
-        //                .unwrap(),
-        //        )
-        //        .unwrap(),
-        //    })
+        Ok(match path {
+            Path::ClientState(path) => {
+                let ics02_address = ics26_contract.ICS02_CLIENT().call().await.unwrap()._0;
+                let ics02_contract = ics02_client::new(ics02_address, provider.clone());
+                let sp1_ics07_address = ics02_contract
+                    .getClient(path.client_id.to_string())
+                    .call()
+                    .await
+                    .unwrap()
+                    ._0;
+                let sp1_ics07_contract = sp1_ics07_tendermint::new(sp1_ics07_address, provider);
+                let client_state = sp1_ics07_contract
+                    .getClientState()
+                    .block(execution_height.into())
+                    .call()
+                    .await
+                    .unwrap()
+                    ._0;
+                serde_json::to_value(client_state.abi_encode()).unwrap()
+            }
+            Path::Commitment(_) => {
+                let ibc_store_address = ics26_contract.IBC_STORE().call().await.unwrap()._0;
+                let ibc_store_contract = ibc_store::new(ibc_store_address, provider);
+
+                let commitment = ibc_store_contract
+                    .getCommitment(path.to_storage_key().into())
+                    .block(execution_height.into())
+                    .call()
+                    .await
+                    .unwrap()
+                    ._0;
+
+                serde_json::to_value(commitment.abi_encode()).unwrap()
+            }
+            Path::Acknowledgement(_) => {
+                let ibc_store_address = ics26_contract.IBC_STORE().call().await.unwrap()._0;
+                let ibc_store_contract = ibc_store::new(ibc_store_address, provider);
+
+                let commitment = ibc_store_contract
+                    .getCommitment(path.to_storage_key().into())
+                    .block(execution_height.into())
+                    .call()
+                    .await
+                    .unwrap()
+                    ._0;
+
+                serde_json::to_value(commitment.abi_encode()).unwrap()
+            }
+            Path::Receipt(_) => {
+                let ibc_store_address = ics26_contract.IBC_STORE().call().await.unwrap()._0;
+                let ibc_store_contract = ibc_store::new(ibc_store_address, provider);
+
+                let commitment = ibc_store_contract
+                    .getCommitment(path.to_storage_key().into())
+                    .block(execution_height.into())
+                    .call()
+                    .await
+                    .unwrap()
+                    ._0;
+
+                serde_json::to_value(commitment.abi_encode()).unwrap()
+            }
+            Path::ClientConsensusState(_) => unimplemented!(),
+            Path::Connection(_) => unimplemented!(),
+            Path::ChannelEnd(_) => unimplemented!(),
+            Path::NextSequenceSend(_) => unimplemented!(),
+            Path::NextSequenceRecv(_) => unimplemented!(),
+            Path::NextSequenceAck(_) => unimplemented!(),
+            Path::NextConnectionSequence(_) => unimplemented!(),
+            Path::NextClientSequence(_) => unimplemented!(),
+        })
     }
 }
 
@@ -355,35 +334,29 @@ impl ChainModuleServer for Module {
 
         let latest_execution_height = provider.get_block_number().await.unwrap();
 
-        let ics26_contract =
-            ics26_router::new(self.ibc_handler_address.parse().unwrap(), provider.clone());
-        let ics02_address = ics26_contract.ICS02_CLIENT().call().await.unwrap()._0;
-        let ics02_contract = ics02_client::new(ics02_address, provider.clone());
-        let sp1_ics07_address = ics02_contract
-            .getClient(client_id.to_string())
-            .call()
+        let client_state = self
+            .fetch_ibc_state(
+                ClientStatePath {
+                    client_id: client_id.clone(),
+                }
+                .into(),
+                self.make_height(latest_execution_height),
+            )
             .await
-            .unwrap()
-            ._0;
-        let sp1_ics07_contract = sp1_ics07_tendermint::new(sp1_ics07_address, provider);
-        let client_state = sp1_ics07_contract
-            .getClientState()
-            .block(latest_execution_height.into())
-            .call()
-            .await
-            .unwrap()
-            ._0;
+            .unwrap();
+
+        let client_state_bytes = serde_json::to_vec(&client_state).unwrap();
 
         let ClientInfo {
             client_type,
             ibc_interface,
             metadata: _,
-        } = self.client_info(e, client_id.clone()).await?;
+        } = self.client_info(e, client_id).await?;
 
         Ok(RawClientState {
             client_type,
             ibc_interface,
-            bytes: client_state.abi_encode().into(),
+            bytes: client_state_bytes.into(),
         })
     }
 }

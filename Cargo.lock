@@ -3447,7 +3447,7 @@ name = "ibc-eureka-types"
 version = "0.1.0"
 
 [[package]]
-name = "ibc-eureka-union-extensions"
+name = "ibc-eureka-union-ext"
 version = "0.1.0"
 dependencies = [
  "unionlabs",
@@ -7286,6 +7286,7 @@ dependencies = [
  "futures",
  "ibc-eureka-solidity",
  "ibc-eureka-types",
+ "ibc-eureka-union-ext",
  "jsonrpsee",
  "reqwest 0.12.8",
  "serde",
