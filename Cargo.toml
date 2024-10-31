@@ -42,3 +42,4 @@ voyager-message = { git = "https://github.com/unionlabs/union", rev = "3d6261947
 voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 beacon-api = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 chain-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+serde-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }

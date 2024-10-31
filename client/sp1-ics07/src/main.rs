@@ -2,6 +2,24 @@
 
 #![deny(clippy::nursery, clippy::pedantic, warnings, missing_docs)]
 
+use jsonrpsee::{
+    core::{async_trait, RpcResult},
+    Extensions,
+};
+use serde_json::Value;
+use serde_utils::Hex;
+use voyager_message::{
+    core::{ClientStateMeta, ClientType, ConsensusStateMeta},
+    module::{ClientModuleInfo, ClientModuleServer},
+    run_client_module_server, ClientModule,
+};
+use voyager_vm::BoxDynError;
+
+#[tokio::main(flavor = "multi_thread")]
+async fn main() {
+    run_client_module_server::<Module>().await;
+}
+
 /// The supported IBC interfaces for SP1 ICS07 family of light clients
 #[derive(Debug, Clone)]
 pub enum SupportedIbcInterfaces {
@@ -32,8 +50,88 @@ pub struct Module {
     pub zk_algorithm: SupportedZkAlgorithms,
 }
 
-#[tokio::main(flavor = "multi_thread")]
-async fn main() {
-    todo!()
-    //run_client_module_server::<Module>().await
+impl ClientModule for Module {
+    type Config = Config;
+
+    async fn new(Config {}: Self::Config, _info: ClientModuleInfo) -> Result<Self, BoxDynError> {
+        todo!()
+    }
+}
+
+#[async_trait]
+impl ClientModuleServer for Module {
+    async fn decode_client_state_meta(
+        &self,
+        _: &Extensions,
+        _client_state: Hex<Vec<u8>>,
+    ) -> RpcResult<ClientStateMeta> {
+        todo!()
+    }
+
+    async fn decode_consensus_state_meta(
+        &self,
+        _: &Extensions,
+        _consensus_state: Hex<Vec<u8>>,
+    ) -> RpcResult<ConsensusStateMeta> {
+        todo!()
+    }
+
+    async fn decode_client_state(
+        &self,
+        _: &Extensions,
+        _client_state: Hex<Vec<u8>>,
+    ) -> RpcResult<Value> {
+        todo!()
+    }
+
+    async fn decode_consensus_state(
+        &self,
+        _: &Extensions,
+        _consensus_state: Hex<Vec<u8>>,
+    ) -> RpcResult<Value> {
+        todo!()
+    }
+
+    async fn encode_client_state(
+        &self,
+        _: &Extensions,
+        _client_state: Value,
+        _metadata: Value,
+    ) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
+
+    async fn encode_consensus_state(
+        &self,
+        _: &Extensions,
+        _consensus_state: Value,
+    ) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
+
+    async fn reencode_counterparty_client_state(
+        &self,
+        _: &Extensions,
+        _client_state: Hex<Vec<u8>>,
+        _client_type: ClientType<'static>,
+    ) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
+
+    async fn reencode_counterparty_consensus_state(
+        &self,
+        _: &Extensions,
+        _consensus_state: Hex<Vec<u8>>,
+        _client_type: ClientType<'static>,
+    ) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
+
+    async fn encode_header(&self, _: &Extensions, _header: Value) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
+
+    async fn encode_proof(&self, _: &Extensions, _proof: Value) -> RpcResult<Hex<Vec<u8>>> {
+        todo!()
+    }
 }

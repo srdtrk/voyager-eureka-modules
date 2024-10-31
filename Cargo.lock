@@ -7313,6 +7313,7 @@ dependencies = [
  "jsonrpsee",
  "reqwest 0.12.8",
  "serde",
+ "serde-utils",
  "serde_json",
  "sp1-ics07-tendermint-solidity",
  "thiserror",
