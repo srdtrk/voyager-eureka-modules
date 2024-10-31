@@ -25,6 +25,6 @@
     "voyager",
   ],
   "dependencies": {
-    "solidity-ibc": "github:cosmos/solidity-ibc-eureka#8254f929521eb6ab9a77a40d22611679ca03ee79",
+    "solidity-ibc": "github:cosmos/solidity-ibc-eureka#08912ab083646fd6e42b24ca356884552717c082",
   },
 }
