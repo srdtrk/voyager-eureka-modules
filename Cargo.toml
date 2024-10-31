@@ -5,6 +5,7 @@ members = [
     "packages/union-ext",
 
     "chain/ethereum-eureka",
+    "client/sp1-ics07",
 ]
 resolver = "2"
 

@@ -7300,6 +7300,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "voyager-client-module-sp1-ics07"
+version = "0.1.0"
+dependencies = [
+ "alloy 0.5.4",
+ "beacon-api",
+ "chain-utils",
+ "futures",
+ "ibc-eureka-solidity",
+ "ibc-eureka-types",
+ "ibc-eureka-union-ext",
+ "jsonrpsee",
+ "reqwest 0.12.8",
+ "serde",
+ "serde_json",
+ "sp1-ics07-tendermint-solidity",
+ "thiserror",
+ "tokio",
+ "unionlabs",
+ "voyager-message",
+ "voyager-vm",
+]
+
+[[package]]
 name = "voyager-core"
 version = "0.1.0"
 source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
