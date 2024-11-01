@@ -1,3 +1,8 @@
+# Build the voyager modules using `cargo build` command.
+build:
+  @echo "Building the voyager modules..."
+  cargo build --bins --release --locked
+
 # Lint the Rust code usind `cargo fmt` and `cargo clippy` commands
 lint:
   @echo "Linting the Rust code..."
