@@ -3,18 +3,25 @@
 #![deny(clippy::nursery, clippy::pedantic, warnings, missing_docs)]
 
 use alloy::sol_types::SolValue;
+use ibc_client_tendermint_types::Header;
 use ibc_eureka_types::SOL_IBC_EUREKA_INTERFACE;
+use ibc_eureka_union_ext::height::IntoUnionHeight;
+use ibc_proto::ibc::lightclients::tendermint::v1::Header as RawHeader;
 use jsonrpsee::{
     core::{async_trait, RpcResult},
     types::ErrorObject,
     Extensions,
 };
-use serde_json::Value;
+use serde_json::{json, Value};
 use serde_utils::Hex;
-use sp1_ics07_tendermint_solidity::IICS07TendermintMsgs::{ClientState, ConsensusState};
+use sp1_ics07_tendermint_solidity::{
+    IICS07TendermintMsgs::{ClientState, ConsensusState},
+    IMembershipMsgs::MembershipProof,
+};
+use tendermint_proto::Protobuf;
 use unionlabs::ErrorReporter;
 use voyager_message::{
-    core::{ClientStateMeta, ClientType, ConsensusStateMeta},
+    core::{ChainId, ClientStateMeta, ClientType, ConsensusStateMeta, ConsensusType},
     module::{ClientModuleInfo, ClientModuleServer},
     run_client_module_server, ClientModule, FATAL_JSONRPC_ERROR_CODE,
 };
@@ -58,8 +65,14 @@ pub struct Module {
 impl ClientModule for Module {
     type Config = Config;
 
-    async fn new(Config {}: Self::Config, _info: ClientModuleInfo) -> Result<Self, BoxDynError> {
-        todo!()
+    async fn new(Config {}: Self::Config, info: ClientModuleInfo) -> Result<Self, BoxDynError> {
+        info.ensure_client_type(ibc_eureka_types::SP1_ICS07_CLIENT_TYPE)?;
+        info.ensure_consensus_type(ConsensusType::TENDERMINT)?;
+
+        Ok(Self {
+            ibc_interface: SupportedIbcInterfaces::try_from(info.ibc_interface.to_string())?,
+            zk_algorithm: SupportedZkAlgorithms::Plonk,
+        })
     }
 }
 
@@ -68,76 +81,144 @@ impl ClientModuleServer for Module {
     async fn decode_client_state_meta(
         &self,
         _: &Extensions,
-        _client_state: Hex<Vec<u8>>,
+        client_state: Hex<Vec<u8>>,
     ) -> RpcResult<ClientStateMeta> {
-        todo!()
+        let cs = self.decode_client_state(&client_state.0)?;
+
+        Ok(ClientStateMeta {
+            chain_id: ChainId::new(cs.chainId.as_str().to_owned()),
+            height: cs.latestHeight.into_unionlabs_height(),
+        })
     }
 
     async fn decode_consensus_state_meta(
         &self,
         _: &Extensions,
-        _consensus_state: Hex<Vec<u8>>,
+        consensus_state: Hex<Vec<u8>>,
     ) -> RpcResult<ConsensusStateMeta> {
-        todo!()
+        let cs = self.decode_consensus_state(&consensus_state.0)?;
+
+        Ok(ConsensusStateMeta {
+            timestamp_nanos: cs.timestamp * 1_000_000_000, // convert to nanoseconds
+        })
     }
 
     async fn decode_client_state(
         &self,
         _: &Extensions,
-        _client_state: Hex<Vec<u8>>,
+        client_state: Hex<Vec<u8>>,
     ) -> RpcResult<Value> {
-        todo!()
+        Ok(serde_json::to_value(self.decode_client_state(&client_state.0)?).unwrap())
     }
 
     async fn decode_consensus_state(
         &self,
         _: &Extensions,
-        _consensus_state: Hex<Vec<u8>>,
+        consensus_state: Hex<Vec<u8>>,
     ) -> RpcResult<Value> {
-        todo!()
+        Ok(serde_json::to_value(self.decode_consensus_state(&consensus_state.0)?).unwrap())
     }
 
     async fn encode_client_state(
         &self,
         _: &Extensions,
-        _client_state: Value,
-        _metadata: Value,
+        client_state: Value,
+        metadata: Value,
     ) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+        serde_json::from_value::<ClientState>(client_state)
+            .map_err(|err| {
+                ErrorObject::owned(
+                    FATAL_JSONRPC_ERROR_CODE,
+                    format!("unable to deserialize client state: {}", ErrorReporter(err)),
+                    None::<()>,
+                )
+            })
+            .and_then(|cs| match self.ibc_interface {
+                SupportedIbcInterfaces::SolidityIbcEureka => {
+                    if !metadata.is_null() {
+                        return Err(ErrorObject::owned(
+                            FATAL_JSONRPC_ERROR_CODE,
+                            "metadata was provided, but this client type does not require \
+                            metadata for client state encoding",
+                            Some(json!({
+                                "provided_metadata": metadata,
+                            })),
+                        ));
+                    }
+
+                    Ok(cs.abi_encode())
+                }
+            })
+            .map(Hex)
     }
 
     async fn encode_consensus_state(
         &self,
         _: &Extensions,
-        _consensus_state: Value,
+        consensus_state: Value,
     ) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+        serde_json::from_value::<ConsensusState>(consensus_state)
+            .map_err(|err| {
+                ErrorObject::owned(
+                    FATAL_JSONRPC_ERROR_CODE,
+                    format!(
+                        "unable to deserialize consensus state: {}",
+                        ErrorReporter(err)
+                    ),
+                    None::<()>,
+                )
+            })
+            .map(|cs| match self.ibc_interface {
+                SupportedIbcInterfaces::SolidityIbcEureka => cs.abi_encode(),
+            })
+            .map(Hex)
     }
 
     async fn reencode_counterparty_client_state(
         &self,
         _: &Extensions,
-        _client_state: Hex<Vec<u8>>,
+        client_state: Hex<Vec<u8>>,
         _client_type: ClientType<'static>,
     ) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+        Ok(client_state)
     }
 
     async fn reencode_counterparty_consensus_state(
         &self,
         _: &Extensions,
-        _consensus_state: Hex<Vec<u8>>,
+        consensus_state: Hex<Vec<u8>>,
         _client_type: ClientType<'static>,
     ) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+        Ok(consensus_state)
     }
 
-    async fn encode_header(&self, _: &Extensions, _header: Value) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+    // NOTE: We always serialize the header using protobuf
+    async fn encode_header(&self, _: &Extensions, header: Value) -> RpcResult<Hex<Vec<u8>>> {
+        serde_json::from_value::<Header>(header)
+            .map_err(|err| {
+                ErrorObject::owned(
+                    FATAL_JSONRPC_ERROR_CODE,
+                    format!("unable to deserialize header: {}", ErrorReporter(err)),
+                    None::<()>,
+                )
+            })
+            .map(<Header as Protobuf<RawHeader>>::encode_vec)
+            .map(Hex)
     }
 
-    async fn encode_proof(&self, _: &Extensions, _proof: Value) -> RpcResult<Hex<Vec<u8>>> {
-        todo!()
+    async fn encode_proof(&self, _: &Extensions, proof: Value) -> RpcResult<Hex<Vec<u8>>> {
+        serde_json::from_value::<MembershipProof>(proof)
+            .map_err(|err| {
+                ErrorObject::owned(
+                    FATAL_JSONRPC_ERROR_CODE,
+                    format!("unable to deserialize proof: {}", ErrorReporter(err)),
+                    None::<()>,
+                )
+            })
+            .map(|proof| match self.ibc_interface {
+                SupportedIbcInterfaces::SolidityIbcEureka => proof.abi_encode(),
+            })
+            .map(Hex)
     }
 }
 
