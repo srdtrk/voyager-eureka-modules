@@ -268,7 +268,7 @@ impl ChainModuleServer for Module {
         // NOTE: We only support one client type for now
         Ok(ClientInfo {
             client_type: ClientType::new(ibc_eureka_types::SP1_ICS07_CLIENT_TYPE),
-            ibc_interface: IbcInterface::new(ibc_eureka_types::IBC_EUREKA_INTERFACE),
+            ibc_interface: IbcInterface::new(ibc_eureka_types::SOL_IBC_EUREKA_INTERFACE),
             metadata: Default::default(),
         })
     }

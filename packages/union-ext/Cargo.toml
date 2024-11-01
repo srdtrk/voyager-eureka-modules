@@ -8,3 +8,4 @@ license = { workspace = true }
 
 [dependencies]
 unionlabs = { workspace = true }
+sp1-ics07-tendermint-solidity = { workspace = true, features = ["rpc"] }

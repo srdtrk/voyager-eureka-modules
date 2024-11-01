@@ -5,6 +5,7 @@ members = [
     "packages/union-ext",
 
     "chain/ethereum-eureka",
+    "client/sp1-ics07",
 ]
 resolver = "2"
 
@@ -36,8 +37,13 @@ alloy-contract = "0.5"
 
 sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "9d52290c4ea4c4247ad82f1e23f87b90e212968a" }
 
+ibc-client-tendermint-types = { version = "0.54", default-features = false }
+tendermint-proto = { version = "0.38", default-features = false }
+ibc-proto = { version = "0.47", default-features = false }
+
 unionlabs = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 voyager-message = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 beacon-api = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
 chain-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+serde-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
