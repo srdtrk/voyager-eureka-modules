@@ -2,17 +2,21 @@
 
 #![deny(clippy::nursery, clippy::pedantic, warnings, missing_docs)]
 
+use alloy::sol_types::SolValue;
 use ibc_eureka_types::SOL_IBC_EUREKA_INTERFACE;
 use jsonrpsee::{
     core::{async_trait, RpcResult},
+    types::ErrorObject,
     Extensions,
 };
 use serde_json::Value;
 use serde_utils::Hex;
+use sp1_ics07_tendermint_solidity::IICS07TendermintMsgs::{ClientState, ConsensusState};
+use unionlabs::ErrorReporter;
 use voyager_message::{
     core::{ClientStateMeta, ClientType, ConsensusStateMeta},
     module::{ClientModuleInfo, ClientModuleServer},
-    run_client_module_server, ClientModule,
+    run_client_module_server, ClientModule, FATAL_JSONRPC_ERROR_CODE,
 };
 use voyager_vm::BoxDynError;
 
@@ -134,6 +138,42 @@ impl ClientModuleServer for Module {
 
     async fn encode_proof(&self, _: &Extensions, _proof: Value) -> RpcResult<Hex<Vec<u8>>> {
         todo!()
+    }
+}
+
+impl Module {
+    /// Decode a consensus state from bytes
+    /// # Errors
+    /// Fails if the consensus state cannot be decoded
+    pub fn decode_consensus_state(&self, consensus_state: &[u8]) -> RpcResult<ConsensusState> {
+        match self.ibc_interface {
+            SupportedIbcInterfaces::SolidityIbcEureka => {
+                ConsensusState::abi_decode(consensus_state, false).map_err(|err| {
+                    ErrorObject::owned(
+                        FATAL_JSONRPC_ERROR_CODE,
+                        format!("unable to decode consensus state: {}", ErrorReporter(err)),
+                        None::<()>,
+                    )
+                })
+            }
+        }
+    }
+
+    /// Decode a client state from bytes
+    /// # Errors
+    /// Fails if the client state cannot be decoded
+    pub fn decode_client_state(&self, client_state: &[u8]) -> RpcResult<ClientState> {
+        match self.ibc_interface {
+            SupportedIbcInterfaces::SolidityIbcEureka => {
+                ClientState::abi_decode(client_state, false).map_err(|err| {
+                    ErrorObject::owned(
+                        FATAL_JSONRPC_ERROR_CODE,
+                        format!("unable to decode client state: {}", ErrorReporter(err)),
+                        None::<()>,
+                    )
+                })
+            }
+        }
     }
 }
 
