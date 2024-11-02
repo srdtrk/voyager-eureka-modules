@@ -55,3 +55,24 @@ jobs:
         with:
           command: test
           args: --workspace --locked --all-features
+
+  build:
+    name: build-all-modules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: "Install Bun"
+        uses: "oven-sh/setup-bun@v1"
+      - name: "Install the Node.js dependencies"
+        run: bun install
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Run cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --bins --locked --release
