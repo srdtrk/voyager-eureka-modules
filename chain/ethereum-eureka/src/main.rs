@@ -1,5 +1,3 @@
-// #![warn(clippy::unwrap_used)] // oh boy this will be a lot of work
-
 use alloy::{
     primitives::Address,
     providers::{Provider, ProviderBuilder},
@@ -7,7 +5,9 @@ use alloy::{
 };
 use beacon_api::client::BeaconApiClient;
 use ibc_eureka_solidity::{
-    ibc_store::store as ibc_store, ics02::client as ics02_client, ics26::router as ics26_router,
+    ibc_store::{store as ibc_store, IBC_STORE_COMMITMENTS_SLOT},
+    ics02::client as ics02_client,
+    ics26::router as ics26_router,
 };
 use ibc_eureka_union_ext::path::IbcEurekaPathExt;
 use jsonrpsee::{
@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sp1_ics07_tendermint_solidity::sp1_ics07_tendermint;
 use unionlabs::{
-    ethereum::{ibc_commitment_key, IBC_HANDLER_COMMITMENTS_SLOT},
+    ethereum::ibc_commitment_key,
     ibc::{core::client::height::Height, lightclients::ethereum::storage_proof::StorageProof},
     ics24::{ClientStatePath, Path},
     id::ClientId,
@@ -222,29 +222,6 @@ impl ChainModuleServer for Module {
             .message
             .slot;
 
-        // // HACK: we introduced this because we were using alchemy for the
-        // // execution endpoint and our custom beacon endpoint that rely on
-        // // its own execution chain. Alchemy was a bit delayed and the
-        // // execution height for the beacon head wasn't existing for few
-        // // secs. We wait for an extra beacon head to let alchemy catch up.
-        // // We should be able to remove that once we rely on an execution
-        // // endpoint that is itself used by the beacon endpoint (no different
-        // // POV).
-        // loop {
-        //     let next_height = self
-        //         .beacon_api_client
-        //         .block(beacon_api::client::BlockId::Head)
-        //         .await?
-        //         .data
-        //         .message
-        //         .slot;
-        //     if next_height > height {
-        //         break;
-        //     }
-
-        //     tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
-        // }
-
         Ok(self.make_height(height))
     }
 
@@ -284,8 +261,7 @@ impl ChainModuleServer for Module {
     }
 
     async fn query_ibc_proof(&self, _: &Extensions, at: Height, path: Path) -> RpcResult<Value> {
-        // TODO: fix commitment key
-        let location = ibc_commitment_key(&path.to_string(), IBC_HANDLER_COMMITMENTS_SLOT);
+        let location = ibc_commitment_key(&path.to_string(), IBC_STORE_COMMITMENTS_SLOT.into());
 
         let provider = ProviderBuilder::new()
             .with_recommended_fillers()
@@ -360,12 +336,3 @@ impl ChainModuleServer for Module {
         })
     }
 }
-
-// type Pls = <(<Module as ModuleContext>::Info, Module) as voyager_message::module::IntoRpc<
-//     ModuleData,
-//     ModuleCall,
-//     ModuleCallback,
-//     // RpcModule = ModuleServer<ModuleContext>,
-// >>::RpcModule;
-
-// static_assertions::assert_type_eq_all!(Pls, Module);
