@@ -1,5 +1,9 @@
 //! Solidity types for IBC Store
 
+/// The storage slot for the `mapping(bytes32 => bytes32) public commitments` mapping in the
+/// `IBCStore` contract.
+pub const IBC_STORE_COMMITMENTS_SLOT: u64 = 1;
+
 #[cfg(feature = "rpc")]
 alloy_sol_types::sol!(
     #[sol(rpc)]
