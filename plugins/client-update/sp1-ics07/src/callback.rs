@@ -3,4 +3,6 @@
 /// Module Callbacks
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
 #[allow(clippy::module_name_repetitions)]
-pub enum ModuleCallback {}
+pub enum ModuleCallback {
+    None,
+}

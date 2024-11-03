@@ -25,6 +25,9 @@ voyager-message      = { workspace = true }
 voyager-vm           = { workspace = true }
 chain-utils          = { workspace = true }
 beacon-api           = { workspace = true }
+alloy-sol-types      = { workspace = true }
+
+sp1-sdk = { workspace = true }
 
 ibc-client-tendermint-types = { workspace = true, features = ["serde"] }
 tendermint-proto            = { workspace = true }
