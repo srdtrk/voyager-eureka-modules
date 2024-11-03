@@ -1,0 +1,39 @@
+[package]
+edition = "2021"
+name    = "voyager-plugin-client-update-sp1-ics07"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+license = { workspace = true }
+
+[dependencies]
+ibc-eureka-types     = { workspace = true }
+ibc-eureka-solidity  = { workspace = true, features = ["rpc"] }
+ibc-eureka-union-ext = { workspace = true }
+
+tokio                = { workspace = true }
+futures              = { workspace = true }
+reqwest              = { workspace = true }
+jsonrpsee            = { workspace = true }
+serde                = { workspace = true, features = ["derive"] }
+serde_json           = { workspace = true }
+serde-utils          = { workspace = true }
+thiserror            = { workspace = true }
+alloy                = { workspace = true, features = ["full", "node-bindings"] }
+unionlabs            = { workspace = true }
+voyager-message      = { workspace = true }
+voyager-vm           = { workspace = true }
+chain-utils          = { workspace = true }
+beacon-api           = { workspace = true }
+alloy-sol-types      = { workspace = true }
+
+sp1-sdk = { workspace = true }
+
+ibc-client-tendermint-types = { workspace = true, features = ["serde"] }
+tendermint-proto            = { workspace = true }
+ibc-proto                   = { workspace = true }
+tendermint-rpc              = { workspace = true }
+
+sp1-ics07-tendermint-solidity = { workspace = true, features = ["rpc"] }
+sp1-ics07-tendermint-prover   = { workspace = true }
+sp1-ics07-tendermint-utils    = { workspace = true }
