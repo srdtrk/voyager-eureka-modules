@@ -135,7 +135,7 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
             }) => {
                 let trusted_light_block = self
                     .tm_client
-                    .get_light_block(Some(update_from.revision_height.try_into().unwrap()))
+                    .get_light_block(Some(update_from.height().try_into().unwrap()))
                     .await
                     .unwrap();
 
@@ -144,7 +144,7 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
 
                 let target_light_block = self
                     .tm_client
-                    .get_light_block(Some(update_to.revision_height.try_into().unwrap()))
+                    .get_light_block(Some(update_to.height().try_into().unwrap()))
                     .await
                     .unwrap();
 
