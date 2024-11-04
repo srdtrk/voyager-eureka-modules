@@ -12,9 +12,6 @@ pub trait IntoUnionHeight {
 
 impl IntoUnionHeight for SP1ICS07Height {
     fn into_unionlabs_height(self) -> Height {
-        Height {
-            revision_number: self.revisionNumber.into(),
-            revision_height: self.revisionHeight.into(),
-        }
+        Height::new_with_revision(self.revisionNumber.into(), self.revisionHeight.into())
     }
 }

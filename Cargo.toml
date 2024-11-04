@@ -38,9 +38,9 @@ alloy-contract = "0.5"
 
 sp1-sdk = { version = "3.0.0", default-features = false }
 
-sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0" }
-sp1-ics07-tendermint-prover = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0" }
-sp1-ics07-tendermint-utils = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0" }
+sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
+sp1-ics07-tendermint-prover = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
+sp1-ics07-tendermint-utils = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
 
 ibc-client-tendermint-types = { version = "0.54", default-features = false }
 tendermint-proto = { version = "0.38", default-features = false }
@@ -48,9 +48,10 @@ tendermint-rpc = { version = "0.38", default-features = false }
 tendermint-light-client-verifier = { version = "0.38", default-features = false }
 ibc-proto = { version = "0.47", default-features = false }
 
-unionlabs = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
-voyager-message = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
-voyager-vm = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
-beacon-api = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
-chain-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
-serde-utils = { git = "https://github.com/unionlabs/union", rev = "3d62619471020fa2e29975ffed08eb69782633d0" }
+unionlabs = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+voyager-message = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+voyager-vm = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+beacon-api = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+chain-utils = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+serde-utils = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+ethereum-light-client-types = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
