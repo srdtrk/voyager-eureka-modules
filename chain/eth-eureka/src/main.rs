@@ -2,16 +2,19 @@
 
 #![deny(clippy::nursery, clippy::pedantic, warnings, missing_docs)]
 
+use std::num::NonZeroU64;
+
 use alloy::{
-    primitives::Address,
-    providers::{Provider, ProviderBuilder},
+    providers::{Provider, ProviderBuilder, RootProvider},
     sol_types::SolValue,
+    transports::BoxTransport,
 };
 use beacon_api::client::BeaconApiClient;
+use ethereum_light_client_types::StorageProof;
 use ibc_eureka_solidity::{
-    ibc_store::{store as ibc_store, IBC_STORE_COMMITMENTS_SLOT},
+    ibc_store::{store as ibc_store, store::storeInstance, IBC_STORE_COMMITMENTS_SLOT},
     ics02::client as ics02_client,
-    ics26::router as ics26_router,
+    ics26::router::{self as ics26_router, routerInstance},
 };
 use ibc_eureka_union_ext::path::IbcEurekaPathExt;
 use jsonrpsee::{
@@ -23,10 +26,15 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sp1_ics07_tendermint_solidity::sp1_ics07_tendermint;
 use unionlabs::{
+    bytes::Bytes,
     ethereum::ibc_commitment_key,
-    ibc::{core::client::height::Height, lightclients::ethereum::storage_proof::StorageProof},
-    ics24::{ClientStatePath, Path},
-    id::ClientId,
+    hash::H256,
+    ibc::core::{
+        channel::channel::Channel, client::height::Height,
+        connection::connection_end::ConnectionEnd,
+    },
+    ics24::{AcknowledgementPath, ClientStatePath, CommitmentPath, Path, ReceiptPath},
+    id::{ChannelId, ClientId, ConnectionId, PortId},
     uint::U256,
     ErrorReporter,
 };
@@ -36,8 +44,6 @@ use voyager_message::{
     run_chain_module_server, ChainModule,
 };
 use voyager_vm::BoxDynError;
-
-const ETHEREUM_REVISION_NUMBER: u64 = 0;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
@@ -50,11 +56,11 @@ pub struct Module {
     /// The chain ID of the Ethereum chain
     pub chain_id: ChainId<'static>,
 
-    /// The address of the `ICS26Router.sol` smart contract.
-    pub ics26_router_address: Address,
+    /// The ics26 router contract instance
+    pub ics26_router: routerInstance<BoxTransport, RootProvider<BoxTransport>>,
 
-    /// The RPC endpoint for the execution chain.
-    pub eth_rpc_api: reqwest::Url,
+    /// The ethereum provider
+    pub eth_provider: RootProvider<BoxTransport>,
     /// The RPC endpoint for the beacon api.
     pub beacon_api_client: BeaconApiClient,
 }
@@ -76,52 +82,31 @@ impl ChainModule for Module {
     type Config = Config;
 
     async fn new(config: Self::Config, info: ChainModuleInfo) -> Result<Self, BoxDynError> {
-        let eth_rpc_api = reqwest::Url::parse(&config.eth_rpc_api)?;
-        let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .on_http(eth_rpc_api.clone());
+        let eth_provider = ProviderBuilder::new()
+            .on_builtin(&config.eth_rpc_api)
+            .await?;
 
-        let chain_id = provider.get_chain_id().await?;
+        let chain_id = eth_provider.get_chain_id().await?;
 
         info.ensure_chain_id(U256::from(chain_id).to_string())?;
 
+        let ics26_router =
+            ics26_router::new(config.ics26_router_address.parse()?, eth_provider.clone());
+
         Ok(Self {
             chain_id: ChainId::new(U256::from(chain_id).to_string()),
-            ics26_router_address: config.ics26_router_address.parse()?,
-            eth_rpc_api,
+            ics26_router,
+            eth_provider,
             beacon_api_client: BeaconApiClient::new(config.eth_beacon_rpc_api).await?,
         })
     }
 }
 
 impl Module {
-    /// Create a new Ethereum Eureka Chain Module
-    /// # Errors
-    /// Returns an error if the chain ID does not match the expected chain ID.
-    /// Returns an error if the api calls fail.
-    pub async fn new(config: Config) -> Result<Self, BoxDynError> {
-        let eth_rpc_api = reqwest::Url::parse(&config.eth_rpc_api)?;
-        let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .on_http(eth_rpc_api.clone());
-
-        let chain_id = provider.get_chain_id().await?;
-
-        Ok(Self {
-            chain_id: ChainId::new(U256::from(chain_id).to_string()),
-            ics26_router_address: config.ics26_router_address.parse()?,
-            eth_rpc_api,
-            beacon_api_client: BeaconApiClient::new(config.eth_beacon_rpc_api).await?,
-        })
-    }
-
     /// Create a new height with the revision number set to the Ethereum revision number.
     #[must_use]
     pub const fn make_height(&self, height: u64) -> Height {
-        Height {
-            revision_number: ETHEREUM_REVISION_NUMBER,
-            revision_height: height,
-        }
+        Height::new(height)
     }
 
     /// Get the execution height of a beacon slot.
@@ -134,45 +119,68 @@ impl Module {
             .unwrap()
     }
 
+    /// Get the IBC store contract instance.
+    /// # Panics
+    /// Panics if the contract call fails.
+    pub async fn ibc_store_contract(
+        &self,
+    ) -> storeInstance<BoxTransport, RootProvider<BoxTransport>> {
+        ibc_store::new(
+            self.ics26_router.IBC_STORE().call().await.unwrap()._0,
+            self.eth_provider.clone(),
+        )
+    }
+
+    /// Get the IBC client contract instance.
+    /// # Panics
+    /// Panics if the contract call fails.
+    // TODO: Use a generic light client interface
+    pub async fn ibc_client_contract(
+        &self,
+        client_id: ClientId,
+    ) -> sp1_ics07_tendermint::sp1_ics07_tendermintInstance<BoxTransport, RootProvider<BoxTransport>>
+    {
+        let ics02_address = self.ics26_router.ICS02_CLIENT().call().await.unwrap()._0;
+        let ics02_contract = ics02_client::new(ics02_address, self.eth_provider.clone());
+        let sp1_ics07_address = ics02_contract
+            .getClient(client_id.to_string())
+            .call()
+            .await
+            .unwrap()
+            ._0;
+        sp1_ics07_tendermint::new(sp1_ics07_address, self.eth_provider.clone())
+    }
+
     /// Fetch the IBC state at a given height and path.
     /// # Errors
     /// Returns an error if the contract calls fail.
     /// # Panics
     /// Panics if the requested path is not implemented in IBC Eureka.
-    pub async fn fetch_ibc_state(&self, path: Path, height: Height) -> Result<Value, BoxDynError> {
-        let execution_height = self
-            .execution_height_of_beacon_slot(height.revision_height)
-            .await;
-        let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .on_http(self.eth_rpc_api.clone());
-        let ics26_contract = ics26_router::new(self.ics26_router_address, provider.clone());
+    pub async fn fetch_ibc_state(
+        &self,
+        path: Path,
+        height: Height,
+    ) -> Result<Option<Bytes>, BoxDynError> {
+        let execution_height = self.execution_height_of_beacon_slot(height.height()).await;
 
         Ok(match path {
             Path::ClientState(path) => {
-                let ics02_address = ics26_contract.ICS02_CLIENT().call().await.unwrap()._0;
-                let ics02_contract = ics02_client::new(ics02_address, provider.clone());
-                let sp1_ics07_address = ics02_contract
-                    .getClient(path.client_id.to_string())
-                    .call()
+                let client_state = self
+                    .ibc_client_contract(path.client_id)
                     .await
-                    .unwrap()
-                    ._0;
-                let sp1_ics07_contract = sp1_ics07_tendermint::new(sp1_ics07_address, provider);
-                let client_state = sp1_ics07_contract
                     .getClientState()
                     .block(execution_height.into())
                     .call()
                     .await
                     .unwrap()
                     ._0;
-                serde_json::to_value(client_state.abi_encode()).unwrap()
+
+                Some(Bytes::from(client_state.abi_encode()))
             }
             Path::Commitment(_) | Path::Acknowledgement(_) | Path::Receipt(_) => {
-                let ibc_store_address = ics26_contract.IBC_STORE().call().await.unwrap()._0;
-                let ibc_store_contract = ibc_store::new(ibc_store_address, provider);
-
-                let commitment = ibc_store_contract
+                let commitment = self
+                    .ibc_store_contract()
+                    .await
                     .getCommitment(path.to_storage_key().into())
                     .block(execution_height.into())
                     .call()
@@ -180,7 +188,11 @@ impl Module {
                     .unwrap()
                     ._0;
 
-                serde_json::to_value(commitment.abi_encode()).unwrap()
+                if commitment.is_zero() {
+                    return Ok(None);
+                }
+
+                Some(Bytes::from(commitment.abi_encode()))
             }
             Path::ClientConsensusState(_)
             | Path::Connection(_)
@@ -207,20 +219,6 @@ impl ChainModuleServer for Module {
             .map_err(|err| ErrorObject::owned(-1, ErrorReporter(err).to_string(), None::<()>))
     }
 
-    /// Query the latest (non-finalized) height of this chain.
-    async fn query_latest_height_as_destination(&self, _: &Extensions) -> RpcResult<Height> {
-        let height = self
-            .beacon_api_client
-            .block(beacon_api::client::BlockId::Head)
-            .await
-            .map_err(|err| ErrorObject::owned(-1, ErrorReporter(err).to_string(), None::<()>))?
-            .data
-            .message
-            .slot;
-
-        Ok(self.make_height(height))
-    }
-
     /// Query the latest finalized timestamp of this chain.
     // TODO: Use a better timestamp type here
     async fn query_latest_timestamp(&self, _: &Extensions) -> RpcResult<i64> {
@@ -237,6 +235,11 @@ impl ChainModuleServer for Module {
             .unwrap())
     }
 
+    async fn query_client_prefix(&self, _: &Extensions, _raw_client_id: u32) -> RpcResult<String> {
+        // NOTE: We only support one client type for now
+        Ok("07-tendermint".to_string())
+    }
+
     async fn client_info(&self, _: &Extensions, _client_id: ClientId) -> RpcResult<ClientInfo> {
         // NOTE: We only support one client type for now
         Ok(ClientInfo {
@@ -246,30 +249,110 @@ impl ChainModuleServer for Module {
         })
     }
 
-    async fn query_ibc_state(&self, _: &Extensions, at: Height, path: Path) -> RpcResult<Value> {
-        self.fetch_ibc_state(path, at).await.map_err(|err| {
-            ErrorObject::owned(
-                -1,
-                format!("error fetching ibc state: {}", ErrorReporter(&*err)),
-                None::<()>,
-            )
-        })
+    async fn query_client_state(
+        &self,
+        _: &Extensions,
+        height: Height,
+        client_id: ClientId,
+    ) -> RpcResult<Bytes> {
+        let path = Path::ClientState(ClientStatePath { client_id });
+
+        self.fetch_ibc_state(path, height)
+            .await
+            .map(Option::unwrap_or_default)
+            .map_err(|err| ErrorObject::owned(-1, err.to_string(), None::<()>))
+    }
+
+    async fn query_commitment(
+        &self,
+        _: &Extensions,
+        height: Height,
+        port_id: PortId,
+        channel_id: ChannelId,
+        sequence: NonZeroU64,
+    ) -> RpcResult<Option<H256>> {
+        let path = Path::Commitment(CommitmentPath {
+            port_id,
+            channel_id,
+            sequence,
+        });
+
+        self.fetch_ibc_state(path, height)
+            .await
+            .map(|commitment| {
+                commitment.map(|commitment| {
+                    let fixed_length_commitment: [u8; 32] = commitment
+                        .into_vec()
+                        .try_into()
+                        .expect("commitment should be 32 bytes long");
+
+                    fixed_length_commitment.into()
+                })
+            })
+            .map_err(|err| ErrorObject::owned(-1, err.to_string(), None::<()>))
+    }
+
+    async fn query_acknowledgement(
+        &self,
+        _: &Extensions,
+        height: Height,
+        port_id: PortId,
+        channel_id: ChannelId,
+        sequence: NonZeroU64,
+    ) -> RpcResult<Option<H256>> {
+        let path = Path::Acknowledgement(AcknowledgementPath {
+            port_id,
+            channel_id,
+            sequence,
+        });
+
+        self.fetch_ibc_state(path, height)
+            .await
+            .map(|commitment| {
+                commitment.map(|commitment| {
+                    let fixed_length_commitment: [u8; 32] = commitment
+                        .into_vec()
+                        .try_into()
+                        .expect("ack should be 32 bytes long");
+
+                    fixed_length_commitment.into()
+                })
+            })
+            .map_err(|err| ErrorObject::owned(-1, err.to_string(), None::<()>))
+    }
+
+    async fn query_receipt(
+        &self,
+        _: &Extensions,
+        height: Height,
+        port_id: PortId,
+        channel_id: ChannelId,
+        sequence: NonZeroU64,
+    ) -> RpcResult<bool> {
+        let path = Path::Receipt(ReceiptPath {
+            port_id,
+            channel_id,
+            sequence,
+        });
+
+        self.fetch_ibc_state(path, height)
+            .await
+            .map(|commitment| commitment.is_some())
+            .map_err(|err| ErrorObject::owned(-1, err.to_string(), None::<()>))
     }
 
     async fn query_ibc_proof(&self, _: &Extensions, at: Height, path: Path) -> RpcResult<Value> {
-        let location = ibc_commitment_key(&path.to_string(), IBC_STORE_COMMITMENTS_SLOT.into());
+        let location = ibc_commitment_key(
+            path.to_storage_key().into(),
+            IBC_STORE_COMMITMENTS_SLOT.into(),
+        );
 
-        let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .on_http(self.eth_rpc_api.clone());
+        let execution_height = self.execution_height_of_beacon_slot(at.height()).await;
 
-        let execution_height = self
-            .execution_height_of_beacon_slot(at.revision_height)
-            .await;
-
-        let proof = provider
+        let proof = self
+            .eth_provider
             .get_proof(
-                self.ics26_router_address,
+                *self.ics26_router.address(),
                 vec![location.to_be_bytes().into()],
             )
             .block_id(execution_height.into())
@@ -299,12 +382,8 @@ impl ChainModuleServer for Module {
         &self,
         e: &Extensions,
         client_id: ClientId,
-    ) -> RpcResult<RawClientState<'static>> {
-        let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .on_http(self.eth_rpc_api.clone());
-
-        let latest_execution_height = provider.get_block_number().await.unwrap();
+    ) -> RpcResult<RawClientState> {
+        let latest_execution_height = self.eth_provider.get_block_number().await.unwrap();
 
         let client_state = self
             .fetch_ibc_state(
@@ -330,5 +409,76 @@ impl ChainModuleServer for Module {
             ibc_interface,
             bytes: client_state_bytes.into(),
         })
+    }
+
+    async fn query_client_consensus_state(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _client_id: ClientId,
+        _trusted_height: Height,
+    ) -> RpcResult<Bytes> {
+        unimplemented!("solidity_ibc_eureka does not store client consensus states")
+    }
+
+    async fn query_connection(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _connection_id: ConnectionId,
+    ) -> RpcResult<Option<ConnectionEnd>> {
+        unimplemented!("ibc_eureka does not support connections")
+    }
+
+    async fn query_channel(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _port_id: PortId,
+        _channel_id: ChannelId,
+    ) -> RpcResult<Option<Channel>> {
+        unimplemented!("ibc_eureka does not support channels")
+    }
+
+    async fn query_next_sequence_send(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _port_id: PortId,
+        _channel_id: ChannelId,
+    ) -> RpcResult<u64> {
+        unimplemented!("ibc_eureka does not support provable sequences")
+    }
+
+    async fn query_next_sequence_recv(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _port_id: PortId,
+        _channel_id: ChannelId,
+    ) -> RpcResult<u64> {
+        unimplemented!("ibc_eureka does not support provable sequences")
+    }
+
+    async fn query_next_sequence_ack(
+        &self,
+        _: &Extensions,
+        _height: Height,
+        _port_id: PortId,
+        _channel_id: ChannelId,
+    ) -> RpcResult<u64> {
+        unimplemented!("ibc_eureka does not support provable sequences")
+    }
+
+    async fn query_next_connection_sequence(
+        &self,
+        _: &Extensions,
+        _height: Height,
+    ) -> RpcResult<u64> {
+        unimplemented!("ibc_eureka does not support provable sequences")
+    }
+
+    async fn query_next_client_sequence(&self, _: &Extensions, _height: Height) -> RpcResult<u64> {
+        unimplemented!("ibc_eureka does not support provable sequences")
     }
 }

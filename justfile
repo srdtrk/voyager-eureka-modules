@@ -18,3 +18,8 @@ lint-fix:
 # Run the Rust tests using `cargo test` command.
 test-cargo:
   cargo test --workspace --locked --all-features
+
+# Install the bun dependencies using `bun install` command.
+bun-install:
+  @echo "Installing bun dependencies..."
+  bun install

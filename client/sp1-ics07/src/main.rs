@@ -13,13 +13,12 @@ use jsonrpsee::{
     Extensions,
 };
 use serde_json::{json, Value};
-use serde_utils::Hex;
 use sp1_ics07_tendermint_solidity::{
     IICS07TendermintMsgs::{ClientState, ConsensusState},
     IMembershipMsgs::MembershipProof,
 };
 use tendermint_proto::Protobuf;
-use unionlabs::ErrorReporter;
+use unionlabs::{bytes::Bytes, ErrorReporter};
 use voyager_message::{
     core::{ChainId, ClientStateMeta, ClientType, ConsensusStateMeta, ConsensusType},
     module::{ClientModuleInfo, ClientModuleServer},
@@ -81,9 +80,9 @@ impl ClientModuleServer for Module {
     async fn decode_client_state_meta(
         &self,
         _: &Extensions,
-        client_state: Hex<Vec<u8>>,
+        client_state: Bytes,
     ) -> RpcResult<ClientStateMeta> {
-        let cs = self.decode_client_state(&client_state.0)?;
+        let cs = self.decode_client_state(&client_state.into_vec())?;
 
         Ok(ClientStateMeta {
             chain_id: ChainId::new(cs.chainId.as_str().to_owned()),
@@ -94,29 +93,28 @@ impl ClientModuleServer for Module {
     async fn decode_consensus_state_meta(
         &self,
         _: &Extensions,
-        consensus_state: Hex<Vec<u8>>,
+        consensus_state: Bytes,
     ) -> RpcResult<ConsensusStateMeta> {
-        let cs = self.decode_consensus_state(&consensus_state.0)?;
+        let cs = self.decode_consensus_state(&consensus_state.into_vec())?;
 
         Ok(ConsensusStateMeta {
             timestamp_nanos: cs.timestamp * 1_000_000_000, // convert to nanoseconds
         })
     }
 
-    async fn decode_client_state(
-        &self,
-        _: &Extensions,
-        client_state: Hex<Vec<u8>>,
-    ) -> RpcResult<Value> {
-        Ok(serde_json::to_value(self.decode_client_state(&client_state.0)?).unwrap())
+    async fn decode_client_state(&self, _: &Extensions, client_state: Bytes) -> RpcResult<Value> {
+        Ok(serde_json::to_value(self.decode_client_state(&client_state.into_vec())?).unwrap())
     }
 
     async fn decode_consensus_state(
         &self,
         _: &Extensions,
-        consensus_state: Hex<Vec<u8>>,
+        consensus_state: Bytes,
     ) -> RpcResult<Value> {
-        Ok(serde_json::to_value(self.decode_consensus_state(&consensus_state.0)?).unwrap())
+        Ok(
+            serde_json::to_value(self.decode_consensus_state(&consensus_state.into_vec())?)
+                .unwrap(),
+        )
     }
 
     async fn encode_client_state(
@@ -124,7 +122,7 @@ impl ClientModuleServer for Module {
         _: &Extensions,
         client_state: Value,
         metadata: Value,
-    ) -> RpcResult<Hex<Vec<u8>>> {
+    ) -> RpcResult<Bytes> {
         serde_json::from_value::<ClientState>(client_state)
             .map_err(|err| {
                 ErrorObject::owned(
@@ -149,14 +147,14 @@ impl ClientModuleServer for Module {
                     Ok(cs.abi_encode())
                 }
             })
-            .map(Hex)
+            .map(Bytes::from)
     }
 
     async fn encode_consensus_state(
         &self,
         _: &Extensions,
         consensus_state: Value,
-    ) -> RpcResult<Hex<Vec<u8>>> {
+    ) -> RpcResult<Bytes> {
         serde_json::from_value::<ConsensusState>(consensus_state)
             .map_err(|err| {
                 ErrorObject::owned(
@@ -171,29 +169,29 @@ impl ClientModuleServer for Module {
             .map(|cs| match self.ibc_interface {
                 SupportedIbcInterfaces::SolidityIbcEureka => cs.abi_encode(),
             })
-            .map(Hex)
+            .map(Bytes::from)
     }
 
     async fn reencode_counterparty_client_state(
         &self,
         _: &Extensions,
-        client_state: Hex<Vec<u8>>,
+        client_state: Bytes,
         _client_type: ClientType<'static>,
-    ) -> RpcResult<Hex<Vec<u8>>> {
+    ) -> RpcResult<Bytes> {
         Ok(client_state)
     }
 
     async fn reencode_counterparty_consensus_state(
         &self,
         _: &Extensions,
-        consensus_state: Hex<Vec<u8>>,
+        consensus_state: Bytes,
         _client_type: ClientType<'static>,
-    ) -> RpcResult<Hex<Vec<u8>>> {
+    ) -> RpcResult<Bytes> {
         Ok(consensus_state)
     }
 
     // NOTE: We always serialize the header using protobuf
-    async fn encode_header(&self, _: &Extensions, header: Value) -> RpcResult<Hex<Vec<u8>>> {
+    async fn encode_header(&self, _: &Extensions, header: Value) -> RpcResult<Bytes> {
         serde_json::from_value::<Header>(header)
             .map_err(|err| {
                 ErrorObject::owned(
@@ -203,10 +201,10 @@ impl ClientModuleServer for Module {
                 )
             })
             .map(<Header as Protobuf<RawHeader>>::encode_vec)
-            .map(Hex)
+            .map(Bytes::from)
     }
 
-    async fn encode_proof(&self, _: &Extensions, proof: Value) -> RpcResult<Hex<Vec<u8>>> {
+    async fn encode_proof(&self, _: &Extensions, proof: Value) -> RpcResult<Bytes> {
         serde_json::from_value::<MembershipProof>(proof)
             .map_err(|err| {
                 ErrorObject::owned(
@@ -218,7 +216,7 @@ impl ClientModuleServer for Module {
             .map(|proof| match self.ibc_interface {
                 SupportedIbcInterfaces::SolidityIbcEureka => proof.abi_encode(),
             })
-            .map(Hex)
+            .map(Bytes::from)
     }
 }
 
