@@ -90,35 +90,22 @@ checksum = "5c6cb57a04249c6480766f7f7cef5467412af1490f8d1e243141daddada3264f"
 
 [[package]]
 name = "alloy"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "056f2c01b2aed86e15b43c47d109bfc8b82553dc34e66452875e51247ec31ab2"
-dependencies = [
- "alloy-consensus 0.4.2",
- "alloy-core",
- "alloy-eips 0.4.2",
- "alloy-genesis 0.4.2",
- "alloy-serde 0.4.2",
-]
-
-[[package]]
-name = "alloy"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea8ebf106e84a1c37f86244df7da0c7587e697b71a0d565cce079449b85ac6f8"
 dependencies = [
- "alloy-consensus 0.5.4",
+ "alloy-consensus",
  "alloy-contract",
  "alloy-core",
- "alloy-eips 0.5.4",
- "alloy-genesis 0.5.4",
+ "alloy-eips",
+ "alloy-genesis",
  "alloy-network",
  "alloy-node-bindings",
  "alloy-provider",
  "alloy-pubsub",
  "alloy-rpc-client",
  "alloy-rpc-types",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "alloy-signer",
  "alloy-signer-local",
  "alloy-transport",
@@ -140,28 +127,14 @@ dependencies = [
 
 [[package]]
 name = "alloy-consensus"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "705687d5bfd019fee57cf9e206b27b30a9a9617535d5590a02b171e813208f8e"
-dependencies = [
- "alloy-eips 0.4.2",
- "alloy-primitives 0.8.10",
- "alloy-rlp",
- "auto_impl",
- "c-kzg",
- "derive_more 1.0.0",
-]
-
-[[package]]
-name = "alloy-consensus"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41ed961a48297c732a5d97ee321aa8bb5009ecadbcb077d8bec90cb54e651629"
 dependencies = [
- "alloy-eips 0.5.4",
+ "alloy-eips",
  "alloy-primitives 0.8.10",
  "alloy-rlp",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "auto_impl",
  "c-kzg",
  "derive_more 1.0.0",
@@ -232,16 +205,6 @@ dependencies = [
 
 [[package]]
 name = "alloy-eip7702"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea59dc42102bc9a1905dc57901edc6dd48b9f38115df86c7d252acba70d71d04"
-dependencies = [
- "alloy-primitives 0.8.10",
- "alloy-rlp",
-]
-
-[[package]]
-name = "alloy-eip7702"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64ffc577390ce50234e02d841214b3dc0bea6aaaae8e04bbf3cb82e9a45da9eb"
@@ -255,48 +218,20 @@ dependencies = [
 
 [[package]]
 name = "alloy-eips"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ffb906284a1e1f63c4607da2068c8197458a352d0b3e9796e67353d72a9be85"
-dependencies = [
- "alloy-eip2930",
- "alloy-eip7702 0.1.1",
- "alloy-primitives 0.8.10",
- "alloy-rlp",
- "c-kzg",
- "derive_more 1.0.0",
- "once_cell",
- "serde",
- "sha2 0.10.8",
-]
-
-[[package]]
-name = "alloy-eips"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b69e06cf9c37be824b9d26d6d101114fdde6af0c87de2828b414c05c4b3daa71"
 dependencies = [
  "alloy-eip2930",
- "alloy-eip7702 0.3.2",
+ "alloy-eip7702",
  "alloy-primitives 0.8.10",
  "alloy-rlp",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "c-kzg",
  "derive_more 1.0.0",
  "once_cell",
  "serde",
  "sha2 0.10.8",
-]
-
-[[package]]
-name = "alloy-genesis"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8429cf4554eed9b40feec7f4451113e76596086447550275e3def933faf47ce3"
-dependencies = [
- "alloy-primitives 0.8.10",
- "alloy-serde 0.4.2",
- "serde",
 ]
 
 [[package]]
@@ -306,7 +241,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dde15e14944a88bd6a57d325e9a49b75558746fe16aaccc79713ae50a6a9574c"
 dependencies = [
  "alloy-primitives 0.8.10",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "serde",
 ]
 
@@ -342,13 +277,13 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "204237129086ce5dc17a58025e93739b01b45313841f98fa339eb1d780511e57"
 dependencies = [
- "alloy-consensus 0.5.4",
- "alloy-eips 0.5.4",
+ "alloy-consensus",
+ "alloy-eips",
  "alloy-json-rpc",
  "alloy-network-primitives",
  "alloy-primitives 0.8.10",
  "alloy-rpc-types-eth",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "alloy-signer",
  "alloy-sol-types 0.8.10",
  "async-trait",
@@ -363,10 +298,10 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "514f70ee2a953db21631cd817b13a1571474ec77ddc03d47616d5e8203489fde"
 dependencies = [
- "alloy-consensus 0.5.4",
- "alloy-eips 0.5.4",
+ "alloy-consensus",
+ "alloy-eips",
  "alloy-primitives 0.8.10",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "serde",
 ]
 
@@ -376,7 +311,7 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "27444ea67d360508753022807cdd0b49a95c878924c9c5f8f32668b7d7768245"
 dependencies = [
- "alloy-genesis 0.5.4",
+ "alloy-genesis",
  "alloy-primitives 0.8.10",
  "k256",
  "rand",
@@ -444,8 +379,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4814d141ede360bb6cd1b4b064f1aab9de391e7c4d0d4d50ac89ea4bc1e25fbd"
 dependencies = [
  "alloy-chains",
- "alloy-consensus 0.5.4",
- "alloy-eips 0.5.4",
+ "alloy-consensus",
+ "alloy-eips",
  "alloy-json-rpc",
  "alloy-network",
  "alloy-network-primitives",
@@ -557,7 +492,7 @@ dependencies = [
  "alloy-primitives 0.8.10",
  "alloy-rpc-types-engine",
  "alloy-rpc-types-eth",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "serde",
 ]
 
@@ -568,7 +503,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2382fc63fb0cf3e02818d547b80cb66cc49a31f8803d0c328402b2008bc13650"
 dependencies = [
  "alloy-primitives 0.8.10",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "serde",
 ]
 
@@ -578,11 +513,11 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "886d22d41992287a235af2f3af4299b5ced2bcafb81eb835572ad35747476946"
 dependencies = [
- "alloy-consensus 0.5.4",
- "alloy-eips 0.5.4",
+ "alloy-consensus",
+ "alloy-eips",
  "alloy-primitives 0.8.10",
  "alloy-rlp",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "derive_more 1.0.0",
  "serde",
  "strum 0.26.3",
@@ -594,26 +529,15 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b034779a4850b4b03f5be5ea674a1cf7d746b2da762b34d1860ab45e48ca27"
 dependencies = [
- "alloy-consensus 0.5.4",
- "alloy-eips 0.5.4",
+ "alloy-consensus",
+ "alloy-eips",
  "alloy-network-primitives",
  "alloy-primitives 0.8.10",
  "alloy-rlp",
- "alloy-serde 0.5.4",
+ "alloy-serde",
  "alloy-sol-types 0.8.10",
  "derive_more 1.0.0",
  "itertools 0.13.0",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "alloy-serde"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dff0ab1cdd43ca001e324dc27ee0e8606bd2161d6623c63e0e0b8c4dfc13600"
-dependencies = [
- "alloy-primitives 0.8.10",
  "serde",
  "serde_json",
 ]
@@ -649,7 +573,7 @@ version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6614f02fc1d5b079b2a4a5320018317b506fd0a6d67c1fd5542a71201724986c"
 dependencies = [
- "alloy-consensus 0.5.4",
+ "alloy-consensus",
  "alloy-network",
  "alloy-primitives 0.8.10",
  "alloy-signer",
@@ -1352,19 +1276,33 @@ dependencies = [
 [[package]]
 name = "beacon-api"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
+ "beacon-api-types",
  "enumorph",
  "hex",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "reqwest 0.11.27",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "thiserror",
  "tokio",
  "tracing",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
+]
+
+[[package]]
+name = "beacon-api-types"
+version = "0.1.0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
+dependencies = [
+ "hex-literal",
+ "serde",
+ "serde-utils",
+ "thiserror",
+ "typenum",
+ "unionlabs",
 ]
 
 [[package]]
@@ -1376,13 +1314,13 @@ checksum = "d86b93f97252c47b41663388e6d155714a9d0c398b99f1005cbc5f978b29f445"
 [[package]]
 name = "berachain-light-client-types"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "serde",
+ "beacon-api-types",
+ "ethereum-light-client-types",
  "tendermint-light-client-types",
  "thiserror",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -1724,14 +1662,14 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 [[package]]
 name = "chain-utils"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "beacon-api",
  "berachain-light-client-types",
  "bip32",
  "chrono",
  "cometbft-rpc",
- "contracts 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "contracts",
  "crossbeam-queue",
  "dashmap 5.5.3",
  "enumorph",
@@ -1743,13 +1681,13 @@ dependencies = [
  "num-rational",
  "num_enum 0.7.3",
  "prost 0.12.6",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "protos",
  "rand",
  "reqwest 0.11.27",
  "scroll-api",
  "scroll-rpc",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "sha2 0.10.8",
  "tendermint-light-client-types",
@@ -1759,7 +1697,7 @@ dependencies = [
  "tonic",
  "tracing",
  "typenum",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -1906,33 +1844,33 @@ dependencies = [
 [[package]]
 name = "cometbft-rpc"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "base64 0.21.7",
  "cometbft-types",
  "hex",
  "jsonrpsee",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
+ "protos",
  "reconnecting-jsonrpc-ws-client",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "thiserror",
  "tracing",
  "tracing-subscriber",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
 name = "cometbft-types"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "protos",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "thiserror",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -2011,16 +1949,7 @@ checksum = "7c74b8349d32d297c9134b8c88677813a227df8f779daa29bfc29c183fe3dca6"
 [[package]]
 name = "contracts"
 version = "0.0.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
-dependencies = [
- "ethers 2.0.10",
- "serde",
-]
-
-[[package]]
-name = "contracts"
-version = "0.0.0"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "ethers 2.0.10",
  "serde",
@@ -2828,6 +2757,17 @@ dependencies = [
  "impl-rlp 0.4.0",
  "impl-serde 0.5.0",
  "tiny-keccak",
+]
+
+[[package]]
+name = "ethereum-light-client-types"
+version = "0.1.0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
+dependencies = [
+ "beacon-api-types",
+ "protos",
+ "thiserror",
+ "unionlabs",
 ]
 
 [[package]]
@@ -4302,7 +4242,7 @@ name = "ibc-eureka-union-ext"
 version = "0.1.0"
 dependencies = [
  "sp1-ics07-tendermint-solidity",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -4340,14 +4280,14 @@ dependencies = [
 [[package]]
 name = "ics23"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "prost 0.12.6",
  "ripemd",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "sha2 0.10.8",
  "thiserror",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -5075,17 +5015,7 @@ dependencies = [
 [[package]]
 name = "macros"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.87",
-]
-
-[[package]]
-name = "macros"
-version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -6395,26 +6325,14 @@ dependencies = [
 [[package]]
 name = "protos"
 version = "0.0.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "chrono",
  "pbjson-types",
  "prost 0.12.6",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "tonic",
-]
-
-[[package]]
-name = "protos"
-version = "0.0.0"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
-dependencies = [
- "chrono",
- "pbjson-types",
- "prost 0.12.6",
- "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
 ]
 
 [[package]]
@@ -6589,7 +6507,7 @@ dependencies = [
 [[package]]
 name = "reconnecting-jsonrpc-ws-client"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "arc-swap",
  "futures",
@@ -6784,7 +6702,7 @@ dependencies = [
 [[package]]
 name = "reth-ipc"
 version = "1.1.0"
-source = "git+https://github.com/paradigmxyz/reth#e374e4bfe9c4779828c73f39ffc30d99850286ec"
+source = "git+https://github.com/paradigmxyz/reth#21d911abb2cf594834c1818d2f723718b5109f8b"
 dependencies = [
  "async-trait",
  "bytes",
@@ -7260,26 +7178,26 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "scroll-api"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "reqwest 0.11.27",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "tracing",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
 name = "scroll-rpc"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "jsonrpsee",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
+ "unionlabs",
 ]
 
 [[package]]
@@ -7408,20 +7326,7 @@ dependencies = [
 [[package]]
 name = "serde-utils"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
-dependencies = [
- "base64 0.21.7",
- "bitvec",
- "chrono",
- "hex",
- "primitive-types 0.12.2",
- "serde",
-]
-
-[[package]]
-name = "serde-utils"
-version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "base64 0.21.7",
  "bitvec",
@@ -7882,7 +7787,7 @@ dependencies = [
 [[package]]
 name = "sp1-ics07-tendermint-prover"
 version = "0.1.0"
-source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0#1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0"
+source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=a3e3cf1961619a1657338b638531a4e8d0bd0991#a3e3cf1961619a1657338b638531a4e8d0bd0991"
 dependencies = [
  "bincode",
  "ibc-client-tendermint-types",
@@ -7898,7 +7803,7 @@ dependencies = [
 [[package]]
 name = "sp1-ics07-tendermint-solidity"
 version = "0.1.0"
-source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0#1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0"
+source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=a3e3cf1961619a1657338b638531a4e8d0bd0991#a3e3cf1961619a1657338b638531a4e8d0bd0991"
 dependencies = [
  "alloy-contract",
  "alloy-sol-types 0.8.10",
@@ -7915,9 +7820,9 @@ dependencies = [
 [[package]]
 name = "sp1-ics07-tendermint-utils"
 version = "0.1.0"
-source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0#1a5b3eba62ae69b0bc1bd603c8d705b1ce82a3d0"
+source = "git+https://github.com/cosmos/sp1-ics07-tendermint?rev=a3e3cf1961619a1657338b638531a4e8d0bd0991#a3e3cf1961619a1657338b638531a4e8d0bd0991"
 dependencies = [
- "alloy 0.5.4",
+ "alloy",
  "anyhow",
  "async-trait",
  "cosmos-sdk-proto",
@@ -7926,13 +7831,13 @@ dependencies = [
  "ibc-core-commitment-types",
  "ibc-core-host-types",
  "prost 0.13.3",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
+ "protos",
  "serde",
  "sp1-ics07-tendermint-solidity",
  "tendermint 0.38.1",
  "tendermint-light-client-verifier",
  "tendermint-rpc 0.38.1",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -8225,33 +8130,16 @@ dependencies = [
 [[package]]
 name = "ssz"
 version = "0.5.3"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "derivative",
  "itertools 0.10.5",
  "lazy_static",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "sha2 0.10.8",
  "smallvec",
- "ssz-derive 0.5.3 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "thiserror",
- "typenum",
-]
-
-[[package]]
-name = "ssz"
-version = "0.5.3"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
-dependencies = [
- "derivative",
- "itertools 0.10.5",
- "lazy_static",
- "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
- "sha2 0.10.8",
- "smallvec",
- "ssz-derive 0.5.3 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
+ "ssz-derive",
  "thiserror",
  "typenum",
 ]
@@ -8259,18 +8147,7 @@ dependencies = [
 [[package]]
 name = "ssz-derive"
 version = "0.5.3"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
-dependencies = [
- "darling",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "ssz-derive"
-version = "0.5.3"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -8361,7 +8238,7 @@ dependencies = [
 [[package]]
 name = "subset-of"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "subset-of-derive",
 ]
@@ -8369,7 +8246,7 @@ dependencies = [
 [[package]]
 name = "subset-of-derive"
 version = "0.0.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -8646,13 +8523,13 @@ dependencies = [
 [[package]]
 name = "tendermint-light-client-types"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "cometbft-types",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "protos",
  "serde",
  "thiserror",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
@@ -8777,18 +8654,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.66"
+version = "1.0.67"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d171f59dbaa811dbbb1aee1e73db92ec2b122911a48e1390dfe327a821ddede"
+checksum = "3b3c6efbfc763e64eb85c11c25320f0737cb7364c4b6336db90aa9ebe27a0bbd"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.66"
+version = "1.0.67"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b08be0f17bd307950653ce45db00cd31200d82b624b36e181337d9c7d92765b5"
+checksum = "b607164372e89797d78b8e23a6d67d5d1038c1c65efd52e1389ef8b77caba2a6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -9417,9 +9294,9 @@ checksum = "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
 [[package]]
 name = "unionlabs"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
- "alloy 0.4.2",
+ "alloy",
  "base64 0.21.7",
  "bcs",
  "bip32",
@@ -9427,7 +9304,7 @@ dependencies = [
  "bs58 0.4.0",
  "chrono",
  "clap",
- "contracts 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "contracts",
  "cosmwasm-std",
  "derive_more 0.99.18",
  "either",
@@ -9440,73 +9317,22 @@ dependencies = [
  "hex",
  "hex-literal",
  "k256",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "milagro_bls",
  "paste",
  "primitive-types 0.12.2",
  "prost 0.12.6",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "protos",
  "ripemd",
  "rlp 0.5.2",
  "rs_merkle",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_bytes",
  "serde_json",
  "sha2 0.10.8",
  "sha3",
- "ssz 0.5.3 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "static_assertions 1.1.0 (git+https://github.com/nvzqz/static-assertions)",
- "subtle-encoding",
- "thiserror",
- "tracing",
- "typenum",
- "uint 0.9.5",
- "wasmparser",
-]
-
-[[package]]
-name = "unionlabs"
-version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96#fe4b10691c3fb28436c44fa26042305b75d31e96"
-dependencies = [
- "alloy 0.4.2",
- "base64 0.21.7",
- "bcs",
- "bip32",
- "bitvec",
- "bs58 0.4.0",
- "chrono",
- "clap",
- "contracts 0.0.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
- "cosmwasm-std",
- "derive_more 0.99.18",
- "either",
- "enumorph",
- "ethers 2.0.10",
- "ethers-contract-derive 2.0.10",
- "ethers-core 2.0.10",
- "frame-support-procedural",
- "generic-array 0.14.7",
- "hex",
- "hex-literal",
- "k256",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
- "milagro_bls",
- "paste",
- "primitive-types 0.12.2",
- "prost 0.12.6",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
- "ripemd",
- "rlp 0.5.2",
- "rs_merkle",
- "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
- "serde_bytes",
- "serde_json",
- "sha2 0.10.8",
- "sha3",
- "ssz 0.5.3 (git+https://github.com/unionlabs/union?rev=fe4b10691c3fb28436c44fa26042305b75d31e96)",
+ "ssz",
  "static_assertions 1.1.0 (git+https://github.com/nvzqz/static-assertions)",
  "subtle-encoding",
  "thiserror",
@@ -9620,7 +9446,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 name = "voyager-chain-module-eth-eureka"
 version = "0.1.0"
 dependencies = [
- "alloy 0.5.4",
+ "alloy",
  "beacon-api",
  "chain-utils",
  "futures",
@@ -9634,7 +9460,7 @@ dependencies = [
  "sp1-ics07-tendermint-solidity",
  "thiserror",
  "tokio",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
  "voyager-message",
  "voyager-vm",
 ]
@@ -9643,7 +9469,7 @@ dependencies = [
 name = "voyager-client-module-sp1-ics07"
 version = "0.1.0"
 dependencies = [
- "alloy 0.5.4",
+ "alloy",
  "beacon-api",
  "chain-utils",
  "futures",
@@ -9655,13 +9481,13 @@ dependencies = [
  "jsonrpsee",
  "reqwest 0.12.9",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "sp1-ics07-tendermint-solidity",
  "tendermint-proto 0.38.1",
  "thiserror",
  "tokio",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
  "voyager-message",
  "voyager-vm",
 ]
@@ -9669,31 +9495,28 @@ dependencies = [
 [[package]]
 name = "voyager-core"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "enumorph",
  "hex",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "schemars",
  "serde",
  "serde_json",
  "thiserror",
  "tracing",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
 name = "voyager-message"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
- "beacon-api",
  "chain-utils",
  "clap",
- "contracts 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
- "dashmap 5.5.3",
+ "contracts",
  "enumorph",
- "ethers 2.0.10",
  "frame-support-procedural",
  "futures",
  "hex",
@@ -9703,30 +9526,23 @@ dependencies = [
  "jaq-std",
  "jaq-syn",
  "jsonrpsee",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "moka",
- "num-bigint 0.4.6",
- "prost 0.12.6",
- "protos 0.0.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
  "reconnecting-jsonrpc-ws-client",
  "reth-ipc",
  "schemars",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "soketto",
  "subset-of",
- "tendermint 0.39.1",
- "tendermint-proto 0.39.1",
- "tendermint-rpc 0.39.1",
  "thiserror",
  "tokio",
  "tokio-util",
- "tonic",
  "tracing",
  "tracing-subscriber",
  "typenum",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
  "voyager-core",
  "voyager-vm",
 ]
@@ -9735,7 +9551,7 @@ dependencies = [
 name = "voyager-plugin-client-update-sp1-ics07"
 version = "0.1.0"
 dependencies = [
- "alloy 0.5.4",
+ "alloy",
  "alloy-sol-types 0.8.10",
  "beacon-api",
  "chain-utils",
@@ -9748,7 +9564,7 @@ dependencies = [
  "jsonrpsee",
  "reqwest 0.12.9",
  "serde",
- "serde-utils 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "serde-utils",
  "serde_json",
  "sp1-ics07-tendermint-prover",
  "sp1-ics07-tendermint-solidity",
@@ -9758,7 +9574,7 @@ dependencies = [
  "tendermint-rpc 0.38.1",
  "thiserror",
  "tokio",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
  "voyager-message",
  "voyager-vm",
 ]
@@ -9766,13 +9582,13 @@ dependencies = [
 [[package]]
 name = "voyager-vm"
 version = "0.1.0"
-source = "git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0#3d62619471020fa2e29975ffed08eb69782633d0"
+source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
 dependencies = [
  "either",
  "frame-support-procedural",
  "futures",
  "itertools 0.12.1",
- "macros 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "macros",
  "serde",
  "serde_json",
  "static_assertions 1.1.0 (git+https://github.com/nvzqz/static-assertions)",
@@ -9781,7 +9597,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "tracing",
- "unionlabs 0.1.0 (git+https://github.com/unionlabs/union?rev=3d62619471020fa2e29975ffed08eb69782633d0)",
+ "unionlabs",
 ]
 
 [[package]]
