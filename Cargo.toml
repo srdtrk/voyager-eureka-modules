@@ -54,3 +54,4 @@ voyager-vm = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408
 beacon-api = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
 chain-utils = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
 serde-utils = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }
+ethereum-light-client-types = { git = "https://github.com/unionlabs/union", rev = "18c86b4ff81408d31bec998f5d23bc1b03c9fda3" }

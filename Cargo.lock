@@ -2766,6 +2766,8 @@ source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d2
 dependencies = [
  "beacon-api-types",
  "protos",
+ "serde",
+ "serde-utils",
  "thiserror",
  "unionlabs",
 ]
@@ -9449,6 +9451,7 @@ dependencies = [
  "alloy",
  "beacon-api",
  "chain-utils",
+ "ethereum-light-client-types",
  "futures",
  "ibc-eureka-solidity",
  "ibc-eureka-types",
