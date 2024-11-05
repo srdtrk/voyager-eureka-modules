@@ -38,11 +38,11 @@ alloy-contract = "0.5"
 
 sp1-sdk = { version = "3.0.0", default-features = false }
 
-sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
-sp1-ics07-tendermint-prover = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
-sp1-ics07-tendermint-utils = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "a3e3cf1961619a1657338b638531a4e8d0bd0991" }
+sp1-ics07-tendermint-solidity = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "3dc45fa8171afa586b99ff40a000690b188ee719" }
+sp1-ics07-tendermint-prover = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "3dc45fa8171afa586b99ff40a000690b188ee719" }
+sp1-ics07-tendermint-utils = { git = "https://github.com/cosmos/sp1-ics07-tendermint", rev = "3dc45fa8171afa586b99ff40a000690b188ee719" }
 
-ibc-client-tendermint-types = { version = "0.54", default-features = false }
+ibc-client-tendermint-types = { version = "0.55", default-features = false }
 tendermint-proto = { version = "0.38", default-features = false }
 tendermint-rpc = { version = "0.38", default-features = false }
 tendermint-light-client-verifier = { version = "0.38", default-features = false }
