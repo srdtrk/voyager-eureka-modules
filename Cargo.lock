@@ -9757,6 +9757,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "voyager-transaction-plugin-eth-eureka"
+version = "0.1.0"
+dependencies = [
+ "alloy",
+ "beacon-api",
+ "chain-utils",
+ "ethereum-light-client-types",
+ "futures",
+ "ibc-eureka-solidity",
+ "ibc-eureka-types",
+ "ibc-eureka-union-ext",
+ "jsonrpsee",
+ "reqwest 0.12.9",
+ "serde",
+ "serde_json",
+ "sp1-ics07-tendermint-solidity",
+ "thiserror",
+ "tokio",
+ "unionlabs",
+ "voyager-message",
+ "voyager-vm",
+]
+
+[[package]]
 name = "voyager-vm"
 version = "0.1.0"
 source = "git+https://github.com/unionlabs/union?rev=18c86b4ff81408d31bec998f5d23bc1b03c9fda3#18c86b4ff81408d31bec998f5d23bc1b03c9fda3"
