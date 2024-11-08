@@ -4237,7 +4237,9 @@ dependencies = [
 name = "ibc-eureka-types"
 version = "0.1.0"
 dependencies = [
+ "ibc-eureka-solidity",
  "serde",
+ "sp1-ics07-tendermint-solidity",
 ]
 
 [[package]]
