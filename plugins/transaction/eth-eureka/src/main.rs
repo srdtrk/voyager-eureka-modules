@@ -142,8 +142,12 @@ end
 
 #[async_trait]
 impl PluginServer<ModuleCall, ModuleCallback> for Module {
-    async fn call(&self, _: &Extensions, _msg: ModuleCall) -> RpcResult<Op<VoyagerMessage>> {
-        todo!()
+    async fn call(&self, _: &Extensions, msg: ModuleCall) -> RpcResult<Op<VoyagerMessage>> {
+        match msg {
+            ModuleCall::SubmitMulticall(msgs) => {
+                todo!()
+            }
+        }
     }
 
     async fn run_pass(
