@@ -24,7 +24,7 @@ use jsonrpsee::{
     types::ErrorObject,
     Extensions,
 };
-use tracing::{error, error_span, info, info_span, instrument, warn, Instrument};
+use tracing::{info, instrument, warn};
 use unionlabs::ErrorReporter;
 use voyager_message::{
     core::ChainId,
@@ -175,7 +175,7 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
         _msgs: Vec<Op<VoyagerMessage>>,
     ) -> RpcResult<PassResult<VoyagerMessage>> {
         // TODO: Implement this
-        Ok(Op::Noop.into())
+        todo!()
     }
 
     async fn callback(
