@@ -32,6 +32,7 @@ serde = { version = "1.0", default-features = false }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }     # serde-json requires one of "std" or "alloc"
 
 thiserror = { version = "1", default-features = false }
+tracing = { version = "0.1", default-features = false }
 
 alloy = "0.5"
 alloy-sol-types = "0.8"

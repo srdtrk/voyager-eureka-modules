@@ -9777,6 +9777,7 @@ dependencies = [
  "sp1-ics07-tendermint-solidity",
  "thiserror",
  "tokio",
+ "tracing",
  "unionlabs",
  "voyager-message",
  "voyager-vm",

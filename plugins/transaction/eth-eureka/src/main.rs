@@ -16,11 +16,16 @@ use alloy::{
 };
 use call::ModuleCall;
 use callback::ModuleCallback;
-use ibc_eureka_solidity::ics26::router::routerInstance;
+use error::TxSubmitError;
+use ibc_eureka_solidity::{ics02::client::clientInstance, ics26::router::routerInstance};
+use ibc_eureka_types::msg::IbcEurekaVoyagerMessage;
 use jsonrpsee::{
     core::{async_trait, RpcResult},
+    types::ErrorObject,
     Extensions,
 };
+use tracing::{error, error_span, info, info_span, instrument, warn, Instrument};
+use unionlabs::ErrorReporter;
 use voyager_message::{
     core::ChainId,
     data::Data,
@@ -32,6 +37,7 @@ use voyager_vm::{pass::PassResult, BoxDynError, Op};
 mod call;
 mod callback;
 mod data;
+mod error;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
@@ -53,6 +59,10 @@ pub struct Config {
     /// The private key for the Ethereum account.
     // TODO: Use a more secure way to store the private key.
     pub private_key: String,
+
+    /// The maximum gas price for any submitted transaction.
+    #[serde(default)]
+    pub max_gas_price: Option<u128>,
 }
 
 /// The Ethereum IBC Eureka transaction module
@@ -72,6 +82,9 @@ pub struct Module {
             Ethereum,
         >,
     >,
+
+    /// The maximum gas price for any submitted transaction.
+    pub max_gas_price: Option<u128>,
 }
 
 impl Plugin for Module {
@@ -112,6 +125,7 @@ impl Plugin for Module {
         Ok(Self {
             chain_id,
             ics26_router,
+            max_gas_price: config.max_gas_price,
         })
     }
 
@@ -144,8 +158,13 @@ end
 impl PluginServer<ModuleCall, ModuleCallback> for Module {
     async fn call(&self, _: &Extensions, msg: ModuleCall) -> RpcResult<Op<VoyagerMessage>> {
         match msg {
-            ModuleCall::SubmitMulticall(msgs) => {
-                todo!()
+            ModuleCall::SubmitCall(msg) => {
+                self.submit_tx(msg).await.map_err(|err| {
+                    ErrorObject::owned(-1, ErrorReporter(err).to_string(), None::<()>)
+                })?;
+
+                // TODO: Add error handling/retry logic here
+                Ok(Op::Noop)
             }
         }
     }
@@ -155,7 +174,8 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
         _: &Extensions,
         _msgs: Vec<Op<VoyagerMessage>>,
     ) -> RpcResult<PassResult<VoyagerMessage>> {
-        todo!()
+        // TODO: Implement this
+        Ok(Op::Noop.into())
     }
 
     async fn callback(
@@ -172,4 +192,48 @@ fn plugin_name(chain_id: &ChainId<'_>) -> String {
     pub const PLUGIN_NAME: &str = env!("CARGO_PKG_NAME");
 
     format!("{PLUGIN_NAME}/{chain_id}")
+}
+
+impl Module {
+    #[instrument(skip_all, fields(chain_id = %self.chain_id))]
+    async fn submit_tx(&self, msg: IbcEurekaVoyagerMessage) -> Result<(), TxSubmitError> {
+        match msg {
+            IbcEurekaVoyagerMessage::UpdateClient(update_msg) => {
+                let ics02_address = self.ics26_router.ICS02_CLIENT().call().await?._0;
+                let ics02_client = clientInstance::new(ics02_address, self.ics26_router.provider());
+
+                self.validate_gas().await?;
+
+                // TODO: Add retry logic here, similar to
+                // https://github.com/unionlabs/union/blob/18c86b4ff81408d31bec998f5d23bc1b03c9fda3/voyager/plugins/transaction/ethereum/src/main.rs#L351
+                let _ = ics02_client
+                    .updateClient(update_msg.client_id, update_msg.msg.into())
+                    .send()
+                    .await?
+                    .watch()
+                    .await?;
+
+                info!("client updated successfully");
+
+                Ok(())
+            }
+        }
+    }
+
+    #[instrument(skip_all, fields(chain_id = %self.chain_id))]
+    async fn validate_gas(&self) -> Result<(), TxSubmitError> {
+        if let Some(max_gas_price) = self.max_gas_price {
+            let gas_price = self.ics26_router.provider().get_gas_price().await?;
+
+            if gas_price > max_gas_price {
+                warn!(%max_gas_price, %gas_price, "gas price is too high");
+                return Err(TxSubmitError::GasPriceTooHigh {
+                    max: max_gas_price,
+                    price: gas_price,
+                });
+            }
+        }
+
+        Ok(())
+    }
 }
