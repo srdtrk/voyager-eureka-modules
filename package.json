@@ -22,9 +22,9 @@
     "light-client",
     "relayer",
     "union",
-    "voyager",
+    "voyager"
   ],
   "dependencies": {
-    "solidity-ibc": "github:cosmos/solidity-ibc-eureka#08912ab083646fd6e42b24ca356884552717c082",
-  },
+    "solidity-ibc": "github:cosmos/solidity-ibc-eureka#f78f4e6627b32fbfed07234875f2120ea230ae44"
+  }
 }

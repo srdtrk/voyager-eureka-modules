@@ -17,11 +17,13 @@ use jsonrpsee::{
     Extensions,
 };
 use sp1_ics07_tendermint_prover::{
-    programs::UpdateClientProgram, prover::SP1ICS07TendermintProver,
+    programs::UpdateClientProgram,
+    prover::{SP1ICS07TendermintProver, SupportedProofType},
 };
 use sp1_ics07_tendermint_solidity::{
-    IICS07TendermintMsgs::{Env, TrustThreshold as SolTrustThreshold},
-    ISP1Msgs::SP1Proof,
+    IICS02ClientMsgs::Height,
+    IICS07TendermintMsgs::{ClientState, TrustThreshold as SolTrustThreshold},
+    ISP1Msgs::{SP1Proof, SupportedZkAlgorithm},
 };
 use sp1_ics07_tendermint_utils::{light_block::LightBlockExt, rpc::TendermintRpcExt};
 use sp1_sdk::HashableKey;
@@ -57,6 +59,10 @@ pub struct Config {
 
     /// Trusting period
     pub trusting_period: u32,
+
+    /// Proof type
+    /// Should be one of "groth16", "plonk"
+    pub proof_type: String,
 }
 
 /// The SP1 ICS07 Light Client Update Plugin
@@ -72,6 +78,8 @@ pub struct Module {
     pub trust_threshold: SolTrustThreshold,
     /// Trusting period
     pub trusting_period: u32,
+    /// Proof type
+    pub proof_type: SupportedProofType,
 }
 
 #[tokio::main(flavor = "multi_thread")]
@@ -102,7 +110,13 @@ impl Plugin for Module {
         env::set_var("SP1_PROVER", &config.sp1_prover);
         env::set_var("SP1_PRIVATE_KEY", &config.sp1_private_key);
 
-        let client_update_prover = SP1ICS07TendermintProver::<UpdateClientProgram>::default();
+        let proof_type = match config.proof_type.as_str() {
+            "groth16" => SupportedProofType::Groth16,
+            "plonk" => SupportedProofType::Plonk,
+            _ => return Err(format!("Unsupported proof type: {}", config.proof_type).into()),
+        };
+
+        let client_update_prover = SP1ICS07TendermintProver::<UpdateClientProgram>::new(proof_type);
 
         Ok(Self {
             chain_id: config.chain_id,
@@ -110,6 +124,7 @@ impl Plugin for Module {
             client_update_prover,
             trust_threshold: config.trust_threshold,
             trusting_period: config.trusting_period,
+            proof_type,
         })
     }
 
@@ -171,9 +186,13 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
             }) => {
                 let trusted_consensus_state = trusted_consensus_state.into();
                 let proof = self.client_update_prover.generate_proof(
+                    &self.to_client_state(),
                     &trusted_consensus_state,
                     &proposed_header,
-                    &self.to_env(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs(),
                 );
 
                 let sp1_proof = SP1Proof::new(
@@ -238,15 +257,20 @@ impl Module {
         plugin_name(&self.chain_id)
     }
 
-    fn to_env(&self) -> Env {
-        Env {
+    // TODO: Call into the eth-eureka chain module to get the client state
+    fn to_client_state(&self) -> ClientState {
+        ClientState {
             chainId: self.chain_id.to_string(),
-            trustThreshold: self.trust_threshold.clone(),
+            trustLevel: self.trust_threshold.clone(),
             trustingPeriod: self.trusting_period,
-            now: std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_secs(),
+            zkAlgorithm: Into::<SupportedZkAlgorithm>::into(self.proof_type).into(),
+            unbondingPeriod: self.trusting_period,
+            latestHeight: Height {
+                // irrelevant
+                revisionNumber: 0,
+                revisionHeight: 0,
+            },
+            isFrozen: false,
         }
     }
 }
